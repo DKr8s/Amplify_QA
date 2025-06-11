@@ -1,0 +1,15 @@
+{
+  "staging": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-questionanswersdemo-staging-412d2-authRole",
+      "UnauthRoleArn": "arn:aws:iam::010526284051:role/amplify-questionanswersdemo-staging-412d2-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::010526284051:role/amplify-questionanswersdemo-staging-412d2-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-questionanswersdemo-staging-412d2-deployment",
+      "UnauthRoleName": "amplify-questionanswersdemo-staging-412d2-unauthRole",
+      "StackName": "amplify-questionanswersdemo-staging-412d2",
+      "StackId": "arn:aws:cloudformation:us-east-1:010526284051:stack/amplify-questionanswersdemo-staging-412d2/82277a20-463d-11f0-8d9b-12b9e061bc3b",
+      "AmplifyAppId": "dxfiypzlpitha"
+    }
+  }
+}
