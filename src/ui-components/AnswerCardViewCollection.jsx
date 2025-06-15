@@ -27,7 +27,7 @@ export default function AnswerCardViewCollection(props) {
   return (
     <Collection
       type="list"
-      isSearchable={true}
+      isSearchable="true"
       isPaginated={true}
       searchPlaceholder="Search..."
       itemsPerPage={20}

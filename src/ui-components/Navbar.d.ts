@@ -5,6 +5,7 @@
  **************************************************************************/
 
 import * as React from "react";
+import { Question } from "../models";
 import { FlexProps, IconProps, TextProps } from "@aws-amplify/ui-react";
 export declare type EscapeHatchProps = {
     [elementHierarchy: string]: Record<string, unknown>;
@@ -26,6 +27,9 @@ export declare type NavbarOverridesProps = {
     "New Question"?: PrimitiveOverrideProps<TextProps>;
 } & EscapeHatchProps;
 export declare type NavbarProps = React.PropsWithChildren<Partial<FlexProps> & {
+    question?: Question;
+    frame321?: React.ReactNode;
+} & {
     overrides?: NavbarOverridesProps | undefined | null;
 }>;
 export default function Navbar(props: NavbarProps): React.ReactElement;

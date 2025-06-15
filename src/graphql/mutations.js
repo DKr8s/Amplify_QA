@@ -1,90 +1,6 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
-export const createQuestion = /* GraphQL */ `
-  mutation CreateQuestion(
-    $input: CreateQuestionInput!
-    $condition: ModelQuestionConditionInput
-  ) {
-    createQuestion(input: $input, condition: $condition) {
-      id
-      Author
-      Text
-      Answers {
-        items {
-          id
-          Author
-          Text
-          questionID
-          createdAt
-          updatedAt
-          __typename
-        }
-        nextToken
-        __typename
-      }
-      createdAt
-      updatedAt
-      __typename
-    }
-  }
-`;
-export const updateQuestion = /* GraphQL */ `
-  mutation UpdateQuestion(
-    $input: UpdateQuestionInput!
-    $condition: ModelQuestionConditionInput
-  ) {
-    updateQuestion(input: $input, condition: $condition) {
-      id
-      Author
-      Text
-      Answers {
-        items {
-          id
-          Author
-          Text
-          questionID
-          createdAt
-          updatedAt
-          __typename
-        }
-        nextToken
-        __typename
-      }
-      createdAt
-      updatedAt
-      __typename
-    }
-  }
-`;
-export const deleteQuestion = /* GraphQL */ `
-  mutation DeleteQuestion(
-    $input: DeleteQuestionInput!
-    $condition: ModelQuestionConditionInput
-  ) {
-    deleteQuestion(input: $input, condition: $condition) {
-      id
-      Author
-      Text
-      Answers {
-        items {
-          id
-          Author
-          Text
-          questionID
-          createdAt
-          updatedAt
-          __typename
-        }
-        nextToken
-        __typename
-      }
-      createdAt
-      updatedAt
-      __typename
-    }
-  }
-`;
 export const createAnswer = /* GraphQL */ `
   mutation CreateAnswer(
     $input: CreateAnswerInput!
@@ -97,6 +13,9 @@ export const createAnswer = /* GraphQL */ `
       questionID
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
       __typename
     }
   }
@@ -113,6 +32,9 @@ export const updateAnswer = /* GraphQL */ `
       questionID
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
       __typename
     }
   }
@@ -129,6 +51,117 @@ export const deleteAnswer = /* GraphQL */ `
       questionID
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const createQuestion = /* GraphQL */ `
+  mutation CreateQuestion(
+    $input: CreateQuestionInput!
+    $condition: ModelQuestionConditionInput
+  ) {
+    createQuestion(input: $input, condition: $condition) {
+      id
+      Author
+      Text
+      imageUrl
+      Answers {
+        items {
+          id
+          Author
+          Text
+          questionID
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          __typename
+        }
+        nextToken
+        startedAt
+        __typename
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const updateQuestion = /* GraphQL */ `
+  mutation UpdateQuestion(
+    $input: UpdateQuestionInput!
+    $condition: ModelQuestionConditionInput
+  ) {
+    updateQuestion(input: $input, condition: $condition) {
+      id
+      Author
+      Text
+      imageUrl
+      Answers {
+        items {
+          id
+          Author
+          Text
+          questionID
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          __typename
+        }
+        nextToken
+        startedAt
+        __typename
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const deleteQuestion = /* GraphQL */ `
+  mutation DeleteQuestion(
+    $input: DeleteQuestionInput!
+    $condition: ModelQuestionConditionInput
+  ) {
+    deleteQuestion(input: $input, condition: $condition) {
+      id
+      Author
+      Text
+      imageUrl
+      Answers {
+        items {
+          id
+          Author
+          Text
+          questionID
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          __typename
+        }
+        nextToken
+        startedAt
+        __typename
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
       __typename
     }
   }

@@ -57,32 +57,47 @@ const QuestionPage = () => {
   }
 
   return (
-    <div className="App">
-      <QuestionCardSingle question={question} />
-      <Button onClick={() => setShowAnswerForm(!showAnswerForm)}
-        marginBottom="10x"
-      >
-        Answer Question
-      </Button>
+  <div className="App">
+    <QuestionCardSingle question={question} />
 
-      {showAnswerForm && (
-        <AnswerCreateForm
-          width={"70%"}
-          onSubmit={(fields) => {
-            const updatedFields = { ...fields };
-            updatedFields["questionID"] = question.id;
-            return updatedFields;
-          }}
-          onSuccess={() => {
-            setShowAnswerForm(false);
-            setTimeout(async () => await queryAnswers(question.id), 1000);
-          }}
-        />
-      )}
+    {question?.imageUrl && (
+  <img
+    src={question.imageUrl}
+    alt="Ảnh minh họa"
+    style={{
+      display: "block",
+      margin: "1rem auto",
+      maxWidth: "100%",
+      maxHeight: "400px", // 👈 giới hạn chiều cao
+      width: "auto",
+      borderRadius: "8px",
+      objectFit: "contain", // giữ tỉ lệ ảnh
+    }}
+  />
+)}
 
-      <AnswerCardViewCollection items={answerList} />
-    </div>
-  );
-};
+    <Button onClick={() => setShowAnswerForm(!showAnswerForm)} marginBottom="10x">
+      Answer Question
+    </Button>
+
+    {showAnswerForm && (
+      <AnswerCreateForm
+        width={"70%"}
+        onSubmit={(fields) => {
+          const updatedFields = { ...fields };
+          updatedFields["questionID"] = question.id;
+          return updatedFields;
+        }}
+        onSuccess={() => {
+          setShowAnswerForm(false);
+          setTimeout(async () => await queryAnswers(question.id), 1000);
+        }}
+      />
+    )}
+
+    <AnswerCardViewCollection items={answerList} />
+  </div>
+);
+}
 
 export default QuestionPage;

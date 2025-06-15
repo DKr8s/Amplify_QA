@@ -9,11 +9,11 @@ import * as React from "react";
 import { getOverrideProps, useNavigateAction } from "./utils";
 import { Flex, Icon, Text } from "@aws-amplify/ui-react";
 export default function Navbar(props) {
-  const { overrides, ...rest } = props;
+  const { question, frame321, overrides, ...rest } = props;
   const qAmpersandAOnClick = useNavigateAction({ type: "url", url: "/" });
   const newQuestionOnClick = useNavigateAction({
     type: "url",
-    url: "/new-question",
+    url: `${"/new-question"}${question?.id}`,
   });
   return (
     <Flex
@@ -99,34 +99,9 @@ export default function Navbar(props) {
         basis="0"
         position="relative"
         padding="0px 0px 0px 0px"
+        children={frame321}
         {...getOverrideProps(overrides, "Frame 321")}
-      >
-        <Text
-          fontFamily="Inter"
-          fontSize="16px"
-          fontWeight="400"
-          color="rgba(0,0,0,1)"
-          lineHeight="24px"
-          textAlign="left"
-          display="block"
-          direction="column"
-          justifyContent="unset"
-          letterSpacing="0.01px"
-          width="unset"
-          height="unset"
-          gap="unset"
-          alignItems="unset"
-          shrink="0"
-          position="relative"
-          padding="0px 0px 0px 0px"
-          whiteSpace="pre-wrap"
-          children="New Question"
-          onClick={() => {
-            newQuestionOnClick();
-          }}
-          {...getOverrideProps(overrides, "New Question")}
-        ></Text>
-      </Flex>
+      ></Flex>
     </Flex>
   );
 }

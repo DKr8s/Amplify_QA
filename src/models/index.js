@@ -4,9 +4,9 @@ import { schema } from './schema';
 
 
 
-const { Question, Answer } = initSchema(schema);
+const { Answer, Question } = initSchema(schema);
 
 export {
-  Question,
-  Answer
+  Answer,
+  Question
 };

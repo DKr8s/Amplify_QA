@@ -21,5 +21,84 @@
       "providerPlugin": "awscloudformation",
       "service": "AppSync"
     }
+  },
+  "auth": {
+    "questionanswersdemo661b9258": {
+      "customAuth": false,
+      "dependsOn": [],
+      "frontendAuthConfig": {
+        "mfaConfiguration": "OFF",
+        "mfaTypes": [
+          "SMS"
+        ],
+        "passwordProtectionSettings": {
+          "passwordPolicyCharacters": [],
+          "passwordPolicyMinLength": 8
+        },
+        "signupAttributes": [
+          "EMAIL"
+        ],
+        "socialProviders": [],
+        "usernameAttributes": [],
+        "verificationMechanisms": [
+          "EMAIL"
+        ]
+      },
+      "providerPlugin": "awscloudformation",
+      "service": "Cognito"
+    }
+  },
+  "function": {
+    "questionanswersdemo094dbd7cCreateAuthChallenge": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "questionanswersdemo094dbd7cDefineAuthChallenge": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    }
+  },
+  "parameters": {
+    "AMPLIFY_function_questionanswersdemo094dbd7cCreateAuthChallenge_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "questionanswersdemo094dbd7cCreateAuthChallenge"
+        }
+      ]
+    },
+    "AMPLIFY_function_questionanswersdemo094dbd7cCreateAuthChallenge_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "questionanswersdemo094dbd7cCreateAuthChallenge"
+        }
+      ]
+    },
+    "AMPLIFY_function_questionanswersdemo094dbd7cDefineAuthChallenge_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "questionanswersdemo094dbd7cDefineAuthChallenge"
+        }
+      ]
+    },
+    "AMPLIFY_function_questionanswersdemo094dbd7cDefineAuthChallenge_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "questionanswersdemo094dbd7cDefineAuthChallenge"
+        }
+      ]
+    }
+  },
+  "storage": {
+    "S3QuestionImage": {
+      "dependsOn": [],
+      "providerPlugin": "awscloudformation",
+      "service": "S3"
+    }
   }
 }

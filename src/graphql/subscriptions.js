@@ -1,81 +1,6 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
-export const onCreateQuestion = /* GraphQL */ `
-  subscription OnCreateQuestion($filter: ModelSubscriptionQuestionFilterInput) {
-    onCreateQuestion(filter: $filter) {
-      id
-      Author
-      Text
-      Answers {
-        items {
-          id
-          Author
-          Text
-          questionID
-          createdAt
-          updatedAt
-          __typename
-        }
-        nextToken
-        __typename
-      }
-      createdAt
-      updatedAt
-      __typename
-    }
-  }
-`;
-export const onUpdateQuestion = /* GraphQL */ `
-  subscription OnUpdateQuestion($filter: ModelSubscriptionQuestionFilterInput) {
-    onUpdateQuestion(filter: $filter) {
-      id
-      Author
-      Text
-      Answers {
-        items {
-          id
-          Author
-          Text
-          questionID
-          createdAt
-          updatedAt
-          __typename
-        }
-        nextToken
-        __typename
-      }
-      createdAt
-      updatedAt
-      __typename
-    }
-  }
-`;
-export const onDeleteQuestion = /* GraphQL */ `
-  subscription OnDeleteQuestion($filter: ModelSubscriptionQuestionFilterInput) {
-    onDeleteQuestion(filter: $filter) {
-      id
-      Author
-      Text
-      Answers {
-        items {
-          id
-          Author
-          Text
-          questionID
-          createdAt
-          updatedAt
-          __typename
-        }
-        nextToken
-        __typename
-      }
-      createdAt
-      updatedAt
-      __typename
-    }
-  }
-`;
 export const onCreateAnswer = /* GraphQL */ `
   subscription OnCreateAnswer($filter: ModelSubscriptionAnswerFilterInput) {
     onCreateAnswer(filter: $filter) {
@@ -85,6 +10,9 @@ export const onCreateAnswer = /* GraphQL */ `
       questionID
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
       __typename
     }
   }
@@ -98,6 +26,9 @@ export const onUpdateAnswer = /* GraphQL */ `
       questionID
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
       __typename
     }
   }
@@ -111,6 +42,108 @@ export const onDeleteAnswer = /* GraphQL */ `
       questionID
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const onCreateQuestion = /* GraphQL */ `
+  subscription OnCreateQuestion($filter: ModelSubscriptionQuestionFilterInput) {
+    onCreateQuestion(filter: $filter) {
+      id
+      Author
+      Text
+      imageUrl
+      Answers {
+        items {
+          id
+          Author
+          Text
+          questionID
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          __typename
+        }
+        nextToken
+        startedAt
+        __typename
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const onUpdateQuestion = /* GraphQL */ `
+  subscription OnUpdateQuestion($filter: ModelSubscriptionQuestionFilterInput) {
+    onUpdateQuestion(filter: $filter) {
+      id
+      Author
+      Text
+      imageUrl
+      Answers {
+        items {
+          id
+          Author
+          Text
+          questionID
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          __typename
+        }
+        nextToken
+        startedAt
+        __typename
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const onDeleteQuestion = /* GraphQL */ `
+  subscription OnDeleteQuestion($filter: ModelSubscriptionQuestionFilterInput) {
+    onDeleteQuestion(filter: $filter) {
+      id
+      Author
+      Text
+      imageUrl
+      Answers {
+        items {
+          id
+          Author
+          Text
+          questionID
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          __typename
+        }
+        nextToken
+        startedAt
+        __typename
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
       __typename
     }
   }

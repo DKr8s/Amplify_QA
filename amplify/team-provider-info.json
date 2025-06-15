@@ -10,6 +10,27 @@
       "StackName": "amplify-questionanswersdemo-staging-412d2",
       "StackId": "arn:aws:cloudformation:us-east-1:010526284051:stack/amplify-questionanswersdemo-staging-412d2/82277a20-463d-11f0-8d9b-12b9e061bc3b",
       "AmplifyAppId": "dxfiypzlpitha"
+    },
+    "categories": {
+      "auth": {
+        "questionanswersdemo661b9258": {}
+      },
+      "function": {
+        "questionanswersdemo094dbd7cCreateAuthChallenge": {
+          "deploymentBucketName": "amplify-questionanswersdemo-staging-412d2-deployment",
+          "s3Key": "amplify-builds/questionanswersdemo094dbd7cCreateAuthChallenge-6576627948656e335a53-build.zip"
+        },
+        "questionanswersdemo094dbd7cDefineAuthChallenge": {
+          "deploymentBucketName": "amplify-questionanswersdemo-staging-412d2-deployment",
+          "s3Key": "amplify-builds/questionanswersdemo094dbd7cDefineAuthChallenge-654577556878785a5244-build.zip"
+        }
+      },
+      "api": {
+        "questionanswersdemo": {}
+      },
+      "storage": {
+        "S3QuestionImage": {}
+      }
     }
   }
 }

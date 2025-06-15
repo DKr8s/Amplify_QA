@@ -24,18 +24,30 @@ export default function QuestionCreateForm(props) {
   const initialValues = {
     Author: "",
     Text: "",
+    imageUrl: "",
+    createdAt: "",
+    updatedAt: "",
   };
   const [Author, setAuthor] = React.useState(initialValues.Author);
   const [Text, setText] = React.useState(initialValues.Text);
+  const [imageUrl, setImageUrl] = React.useState(initialValues.imageUrl);
+  const [createdAt, setCreatedAt] = React.useState(initialValues.createdAt);
+  const [updatedAt, setUpdatedAt] = React.useState(initialValues.updatedAt);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
     setAuthor(initialValues.Author);
     setText(initialValues.Text);
+    setImageUrl(initialValues.imageUrl);
+    setCreatedAt(initialValues.createdAt);
+    setUpdatedAt(initialValues.updatedAt);
     setErrors({});
   };
   const validations = {
     Author: [],
     Text: [{ type: "Required" }],
+    imageUrl: [],
+    createdAt: [],
+    updatedAt: [],
   };
   const runValidationTasks = async (
     fieldName,
@@ -54,6 +66,23 @@ export default function QuestionCreateForm(props) {
     setErrors((errors) => ({ ...errors, [fieldName]: validationResponse }));
     return validationResponse;
   };
+  const convertToLocal = (date) => {
+    const df = new Intl.DateTimeFormat("default", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      calendar: "iso8601",
+      numberingSystem: "latn",
+      hourCycle: "h23",
+    });
+    const parts = df.formatToParts(date).reduce((acc, part) => {
+      acc[part.type] = part.value;
+      return acc;
+    }, {});
+    return `${parts.year}-${parts.month}-${parts.day}T${parts.hour}:${parts.minute}`;
+  };
   return (
     <Grid
       as="form"
@@ -65,6 +94,9 @@ export default function QuestionCreateForm(props) {
         let modelFields = {
           Author,
           Text,
+          imageUrl,
+          createdAt,
+          updatedAt,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -121,6 +153,9 @@ export default function QuestionCreateForm(props) {
             const modelFields = {
               Author: value,
               Text,
+              imageUrl,
+              createdAt,
+              updatedAt,
             };
             const result = onChange(modelFields);
             value = result?.Author ?? value;
@@ -146,6 +181,9 @@ export default function QuestionCreateForm(props) {
             const modelFields = {
               Author,
               Text: value,
+              imageUrl,
+              createdAt,
+              updatedAt,
             };
             const result = onChange(modelFields);
             value = result?.Text ?? value;
@@ -159,6 +197,94 @@ export default function QuestionCreateForm(props) {
         errorMessage={errors.Text?.errorMessage}
         hasError={errors.Text?.hasError}
         {...getOverrideProps(overrides, "Text")}
+      ></TextField>
+      <TextField
+        label="Image url"
+        isRequired={false}
+        isReadOnly={false}
+        value={imageUrl}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              Author,
+              Text,
+              imageUrl: value,
+              createdAt,
+              updatedAt,
+            };
+            const result = onChange(modelFields);
+            value = result?.imageUrl ?? value;
+          }
+          if (errors.imageUrl?.hasError) {
+            runValidationTasks("imageUrl", value);
+          }
+          setImageUrl(value);
+        }}
+        onBlur={() => runValidationTasks("imageUrl", imageUrl)}
+        errorMessage={errors.imageUrl?.errorMessage}
+        hasError={errors.imageUrl?.hasError}
+        {...getOverrideProps(overrides, "imageUrl")}
+      ></TextField>
+      <TextField
+        label="Created at"
+        isRequired={false}
+        isReadOnly={false}
+        type="datetime-local"
+        value={createdAt && convertToLocal(new Date(createdAt))}
+        onChange={(e) => {
+          let value =
+            e.target.value === "" ? "" : new Date(e.target.value).toISOString();
+          if (onChange) {
+            const modelFields = {
+              Author,
+              Text,
+              imageUrl,
+              createdAt: value,
+              updatedAt,
+            };
+            const result = onChange(modelFields);
+            value = result?.createdAt ?? value;
+          }
+          if (errors.createdAt?.hasError) {
+            runValidationTasks("createdAt", value);
+          }
+          setCreatedAt(value);
+        }}
+        onBlur={() => runValidationTasks("createdAt", createdAt)}
+        errorMessage={errors.createdAt?.errorMessage}
+        hasError={errors.createdAt?.hasError}
+        {...getOverrideProps(overrides, "createdAt")}
+      ></TextField>
+      <TextField
+        label="Updated at"
+        isRequired={false}
+        isReadOnly={false}
+        type="datetime-local"
+        value={updatedAt && convertToLocal(new Date(updatedAt))}
+        onChange={(e) => {
+          let value =
+            e.target.value === "" ? "" : new Date(e.target.value).toISOString();
+          if (onChange) {
+            const modelFields = {
+              Author,
+              Text,
+              imageUrl,
+              createdAt,
+              updatedAt: value,
+            };
+            const result = onChange(modelFields);
+            value = result?.updatedAt ?? value;
+          }
+          if (errors.updatedAt?.hasError) {
+            runValidationTasks("updatedAt", value);
+          }
+          setUpdatedAt(value);
+        }}
+        onBlur={() => runValidationTasks("updatedAt", updatedAt)}
+        errorMessage={errors.updatedAt?.errorMessage}
+        hasError={errors.updatedAt?.hasError}
+        {...getOverrideProps(overrides, "updatedAt")}
       ></TextField>
       <Flex
         justifyContent="space-between"

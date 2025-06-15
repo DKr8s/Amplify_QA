@@ -25,16 +25,25 @@ export declare type ValidationFunction<T> = (value: T, validationResponse: Valid
 export declare type QuestionUpdateFormInputValues = {
     Author?: string;
     Text?: string;
+    imageUrl?: string;
+    createdAt?: string;
+    updatedAt?: string;
 };
 export declare type QuestionUpdateFormValidationValues = {
     Author?: ValidationFunction<string>;
     Text?: ValidationFunction<string>;
+    imageUrl?: ValidationFunction<string>;
+    createdAt?: ValidationFunction<string>;
+    updatedAt?: ValidationFunction<string>;
 };
 export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
 export declare type QuestionUpdateFormOverridesProps = {
     QuestionUpdateFormGrid?: PrimitiveOverrideProps<GridProps>;
     Author?: PrimitiveOverrideProps<TextFieldProps>;
     Text?: PrimitiveOverrideProps<TextFieldProps>;
+    imageUrl?: PrimitiveOverrideProps<TextFieldProps>;
+    createdAt?: PrimitiveOverrideProps<TextFieldProps>;
+    updatedAt?: PrimitiveOverrideProps<TextFieldProps>;
 } & EscapeHatchProps;
 export declare type QuestionUpdateFormProps = React.PropsWithChildren<{
     overrides?: QuestionUpdateFormOverridesProps | undefined | null;
