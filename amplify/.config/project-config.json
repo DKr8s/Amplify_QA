@@ -2,7 +2,7 @@
   "providers": [
     "awscloudformation"
   ],
-  "projectName": "questionanswersdemo",
+  "projectName": "AmplifyQA",
   "version": "3.1",
   "frontend": "javascript",
   "javascript": {

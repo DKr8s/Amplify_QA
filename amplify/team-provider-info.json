@@ -1,33 +1,29 @@
 {
-  "dev": {
+  "staging": {
     "awscloudformation": {
-      "AuthRoleName": "amplify-questionanswersdemo-dev-63ebd-authRole",
-      "UnauthRoleArn": "arn:aws:iam::010526284051:role/amplify-questionanswersdemo-dev-63ebd-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::010526284051:role/amplify-questionanswersdemo-dev-63ebd-authRole",
+      "AuthRoleName": "amplify-amplifyqa-staging-6b8e2-authRole",
+      "UnauthRoleArn": "arn:aws:iam::010526284051:role/amplify-amplifyqa-staging-6b8e2-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::010526284051:role/amplify-amplifyqa-staging-6b8e2-authRole",
       "Region": "us-east-1",
-      "DeploymentBucketName": "amplify-questionanswersdemo-dev-63ebd-deployment",
-      "UnauthRoleName": "amplify-questionanswersdemo-dev-63ebd-unauthRole",
-      "StackName": "amplify-questionanswersdemo-dev-63ebd",
-      "StackId": "arn:aws:cloudformation:us-east-1:010526284051:stack/amplify-questionanswersdemo-dev-63ebd/71322a70-4f26-11f0-9e25-0affe4980725",
-      "AmplifyAppId": "dxfiypzlpitha"
+      "DeploymentBucketName": "amplify-amplifyqa-staging-6b8e2-deployment",
+      "UnauthRoleName": "amplify-amplifyqa-staging-6b8e2-unauthRole",
+      "StackName": "amplify-amplifyqa-staging-6b8e2",
+      "StackId": "arn:aws:cloudformation:us-east-1:010526284051:stack/amplify-amplifyqa-staging-6b8e2/42815ef0-4f2e-11f0-a31a-0e549a9da91d",
+      "AmplifyAppId": "dlqmv78ti9l9h"
     },
     "categories": {
       "auth": {
-        "questionanswersdemo661b9258": {},
-        "questionanswersdemo094dbd7c": {}
+        "questionanswersdemo661b9258": {}
       },
       "function": {
         "questionanswersdemo094dbd7cCreateAuthChallenge": {
-          "deploymentBucketName": "amplify-questionanswersdemo-dev-63ebd-deployment",
+          "deploymentBucketName": "amplify-amplifyqa-staging-6b8e2-deployment",
           "s3Key": "amplify-builds/questionanswersdemo094dbd7cCreateAuthChallenge-6576627948656e335a53-build.zip"
         },
         "questionanswersdemo094dbd7cDefineAuthChallenge": {
-          "deploymentBucketName": "amplify-questionanswersdemo-dev-63ebd-deployment",
+          "deploymentBucketName": "amplify-amplifyqa-staging-6b8e2-deployment",
           "s3Key": "amplify-builds/questionanswersdemo094dbd7cDefineAuthChallenge-654577556878785a5244-build.zip"
         }
-      },
-      "api": {
-        "questionanswersdemo": {}
       },
       "storage": {
         "S3QuestionImage": {}
