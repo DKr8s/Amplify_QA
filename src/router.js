@@ -22,3 +22,14 @@ export default function Router() {
     </Authenticator>
   );
 }
+import RequireAdmin from './RequireAdmin';
+import AdminDashboard from './AdminDashboard';
+
+{
+  path: "/admin",
+  element (
+    <RequireAdmin>
+      <AdminDashboard />
+    </RequireAdmin>
+  )
+}
