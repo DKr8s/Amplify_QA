@@ -39,7 +39,7 @@ export default function NewQuestionWithImage() {
 
         // Tạo URL tĩnh
         const region = 'us-east-1';
-        const bucket = 'questionanswerdemo412d2-staging';
+        const bucket = 'questionanswerdemo6b8e2-staging';
         finalImageUrl = `https://${bucket}.s3.${region}.amazonaws.com/public/${filename}`;
       }
       console.log("✅ finalImageUrl được lưu vào DB:", finalImageUrl);

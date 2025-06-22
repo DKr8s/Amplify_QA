@@ -1,5 +1,27 @@
 {
   "api": {
+    "AdminQueries": {
+      "authorizationType": "AMAZON_COGNITO_USER_POOLS",
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "questionanswersdemo661b9258"
+        },
+        {
+          "attributes": [
+            "Arn",
+            "Name"
+          ],
+          "category": "function",
+          "resourceName": "AdminQueries963fd88e"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    },
     "questionanswersdemo": {
       "dependsOn": [],
       "output": {
@@ -27,7 +49,7 @@
       "customAuth": false,
       "dependsOn": [],
       "frontendAuthConfig": {
-        "mfaConfiguration": "OFF",
+        "mfaConfiguration": "OPTIONAL",
         "mfaTypes": [
           "SMS"
         ],
@@ -38,7 +60,9 @@
         "signupAttributes": [
           "EMAIL"
         ],
-        "socialProviders": [],
+        "socialProviders": [
+          "GOOGLE"
+        ],
         "usernameAttributes": [],
         "verificationMechanisms": [
           "EMAIL"
@@ -46,9 +70,39 @@
       },
       "providerPlugin": "awscloudformation",
       "service": "Cognito"
+    },
+    "userPoolGroups": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId",
+            "AppClientIDWeb",
+            "AppClientID",
+            "IdentityPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "questionanswersdemo661b9258"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Cognito-UserPool-Groups"
     }
   },
   "function": {
+    "AdminQueries963fd88e": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "questionanswersdemo661b9258"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
     "questionanswersdemo094dbd7cCreateAuthChallenge": {
       "build": true,
       "providerPlugin": "awscloudformation",
@@ -61,6 +115,38 @@
     }
   },
   "parameters": {
+    "AMPLIFY_auth_questionanswersdemo661b9258_facebookAppId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "questionanswersdemo661b9258"
+        }
+      ]
+    },
+    "AMPLIFY_auth_questionanswersdemo661b9258_googleClientId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "questionanswersdemo661b9258"
+        }
+      ]
+    },
+    "AMPLIFY_function_AdminQueries963fd88e_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "AdminQueries963fd88e"
+        }
+      ]
+    },
+    "AMPLIFY_function_AdminQueries963fd88e_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "AdminQueries963fd88e"
+        }
+      ]
+    },
     "AMPLIFY_function_questionanswersdemo094dbd7cCreateAuthChallenge_deploymentBucketName": {
       "usedBy": [
         {

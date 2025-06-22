@@ -8,11 +8,11 @@
     "autoVerifiedAttributes": [
       "email"
     ],
-    "mfaConfiguration": "OFF",
+    "mfaConfiguration": "OPTIONAL",
     "mfaTypes": [
       "SMS Text Message"
     ],
-    "smsAuthenticationMessage": "Your authentication code is {####}",
+    "smsAuthenticationMessage": "Your verification code is {####}. Do not share this code with anyone.",
     "smsVerificationMessage": "Your verification code is {####}",
     "emailVerificationSubject": "Your verification code",
     "emailVerificationMessage": "Your verification code is {####}",
@@ -37,7 +37,9 @@
     "resourceName": "questionanswersdemo661b9258",
     "authSelections": "identityPoolAndUserPool",
     "useDefault": "manual",
-    "userPoolGroupList": [],
+    "userPoolGroupList": [
+      "no"
+    ],
     "serviceName": "Cognito",
     "usernameCaseSensitive": false,
     "useEnabledMfas": true,
@@ -55,15 +57,24 @@
     },
     "breakCircularDependency": true,
     "dependsOn": [],
-    "thirdPartyAuth": false,
+    "thirdPartyAuth": true,
     "userPoolGroups": false,
     "adminQueries": true,
     "triggers": {},
-    "hostedUI": false,
-    "authProviders": [],
+    "hostedUI": true,
+    "authProviders": [
+      "accounts.google.com"
+    ],
     "parentStack": {
       "Ref": "AWS::StackId"
     },
-    "permissions": []
+    "permissions": [],
+    "hostedUIDomainName": "amplifyqacbb9c2ef-cbb9c2ef",
+    "authProvidersUserPool": [
+      "Google"
+    ],
+    "hostedUIProviderMeta": "[{\"ProviderName\":\"Google\",\"authorize_scopes\":\"openid email profile\",\"AttributeMapping\":{\"email\":\"email\",\"username\":\"sub\"}}]",
+    "adminQueryGroup": "Admin",
+    "oAuthMetadata": "{\"AllowedOAuthFlows\":[\"code\"],\"AllowedOAuthScopes\":[\"phone\",\"email\",\"openid\",\"profile\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"https://amplifyqa.auth.us-east-1.amazoncognito.com/oauth2/idpresponse/\",\"http://localhost:3000/\",\"https://main.dlqmv78ti9l9h.amplifyapp.com/\"],\"LogoutURLs\":[\"https://amplifyqa.auth.us-east-1.amazoncognito.com/logout/\",\"http://localhost:3000/\",\"https://main.dlqmv78ti9l9h.amplifyapp.com/\"]}"
   }
 }
