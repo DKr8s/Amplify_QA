@@ -25,16 +25,22 @@ export declare type ValidationFunction<T> = (value: T, validationResponse: Valid
 export declare type AnswerUpdateFormInputValues = {
     Text?: string;
     Author?: string;
+    createdAt?: string;
+    parentID?: string;
 };
 export declare type AnswerUpdateFormValidationValues = {
     Text?: ValidationFunction<string>;
     Author?: ValidationFunction<string>;
+    createdAt?: ValidationFunction<string>;
+    parentID?: ValidationFunction<string>;
 };
 export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
 export declare type AnswerUpdateFormOverridesProps = {
     AnswerUpdateFormGrid?: PrimitiveOverrideProps<GridProps>;
     Text?: PrimitiveOverrideProps<TextAreaFieldProps>;
     Author?: PrimitiveOverrideProps<TextFieldProps>;
+    createdAt?: PrimitiveOverrideProps<TextFieldProps>;
+    parentID?: PrimitiveOverrideProps<TextFieldProps>;
 } & EscapeHatchProps;
 export declare type AnswerUpdateFormProps = React.PropsWithChildren<{
     overrides?: AnswerUpdateFormOverridesProps | undefined | null;

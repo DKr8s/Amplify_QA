@@ -9,26 +9,28 @@ import { LazyLoading, LazyLoadingDisabled, AsyncCollection } from "@aws-amplify/
 type EagerAnswer = {
   readonly [__modelMeta__]: {
     identifier: ManagedIdentifier<Answer, 'id'>;
-    readOnlyFields: 'createdAt' | 'updatedAt';
+    readOnlyFields: 'updatedAt';
   };
   readonly id: string;
   readonly Author?: string | null;
   readonly Text: string;
-  readonly questionID: string;
   readonly createdAt?: string | null;
+  readonly questionID: string;
+  readonly parentID?: string | null;
   readonly updatedAt?: string | null;
 }
 
 type LazyAnswer = {
   readonly [__modelMeta__]: {
     identifier: ManagedIdentifier<Answer, 'id'>;
-    readOnlyFields: 'createdAt' | 'updatedAt';
+    readOnlyFields: 'updatedAt';
   };
   readonly id: string;
   readonly Author?: string | null;
   readonly Text: string;
-  readonly questionID: string;
   readonly createdAt?: string | null;
+  readonly questionID: string;
+  readonly parentID?: string | null;
   readonly updatedAt?: string | null;
 }
 

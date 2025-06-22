@@ -7,8 +7,9 @@ export const getAnswer = /* GraphQL */ `
       id
       Author
       Text
-      questionID
       createdAt
+      questionID
+      parentID
       updatedAt
       _version
       _deleted
@@ -28,8 +29,9 @@ export const listAnswers = /* GraphQL */ `
         id
         Author
         Text
-        questionID
         createdAt
+        questionID
+        parentID
         updatedAt
         _version
         _deleted
@@ -59,8 +61,9 @@ export const syncAnswers = /* GraphQL */ `
         id
         Author
         Text
-        questionID
         createdAt
+        questionID
+        parentID
         updatedAt
         _version
         _deleted
@@ -92,8 +95,43 @@ export const answersByQuestionID = /* GraphQL */ `
         id
         Author
         Text
-        questionID
         createdAt
+        questionID
+        parentID
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
+  }
+`;
+export const answersByParentID = /* GraphQL */ `
+  query AnswersByParentID(
+    $parentID: ID!
+    $sortDirection: ModelSortDirection
+    $filter: ModelAnswerFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    answersByParentID(
+      parentID: $parentID
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        Author
+        Text
+        createdAt
+        questionID
+        parentID
         updatedAt
         _version
         _deleted
@@ -118,8 +156,9 @@ export const getQuestion = /* GraphQL */ `
           id
           Author
           Text
-          questionID
           createdAt
+          questionID
+          parentID
           updatedAt
           _version
           _deleted

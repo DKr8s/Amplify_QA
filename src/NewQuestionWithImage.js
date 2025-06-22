@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { DataStore } from '@aws-amplify/datastore';
 import { Question } from './models';
 import { useAuthenticator } from '@aws-amplify/ui-react';
-import { uploadData, getUrl } from '@aws-amplify/storage';
+import { uploadData } from '@aws-amplify/storage';
 
 export default function NewQuestionWithImage() {
   const { user } = useAuthenticator((context) => [context.user]);
@@ -10,7 +10,6 @@ export default function NewQuestionWithImage() {
   const [author, setAuthor] = useState('');
   const [file, setFile] = useState(null);
   const [imageUrlInput, setImageUrlInput] = useState('');
-  const [imageUrl, setImageUrl] = useState('');
   const [uploading, setUploading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState(null);
 
@@ -29,7 +28,6 @@ export default function NewQuestionWithImage() {
         finalImageUrl = imageUrlInput.trim();
       } else if (file) {
         const filename = `${Date.now()}-${file.name}`;
-
         await uploadData({
           key: filename,
           data: file,
@@ -39,14 +37,12 @@ export default function NewQuestionWithImage() {
           },
         }).result;
 
-        const result = await getUrl({
-          key: filename,
-          options: { accessLevel: 'public' },
-        });
-
-        finalImageUrl = result.url?.href || result.url || null;
-        setImageUrl(finalImageUrl);
+        // Tạo URL tĩnh
+        const region = 'us-east-1';
+        const bucket = 'questionanswerdemo412d2-staging';
+        finalImageUrl = `https://${bucket}.s3.${region}.amazonaws.com/public/${filename}`;
       }
+      console.log("✅ finalImageUrl được lưu vào DB:", finalImageUrl);
 
       await DataStore.save(
         new Question({
@@ -70,12 +66,12 @@ export default function NewQuestionWithImage() {
     const selectedFile = e.target.files[0];
     setFile(selectedFile);
     setPreviewUrl(selectedFile ? URL.createObjectURL(selectedFile) : null);
-    setImageUrlInput(''); // reset image URL if uploading file
+    setImageUrlInput('');
   };
 
   const handleImageUrlInput = (e) => {
     setImageUrlInput(e.target.value);
-    setFile(null); // reset file input if using URL
+    setFile(null);
     setPreviewUrl(null);
   };
 
@@ -85,8 +81,9 @@ export default function NewQuestionWithImage() {
     setFile(null);
     setPreviewUrl(null);
     setImageUrlInput('');
-    setImageUrl('');
   };
+
+  const imagePreviewSrc = imageUrlInput || previewUrl;
 
   return (
     <form
@@ -110,14 +107,7 @@ export default function NewQuestionWithImage() {
           placeholder="Author (optional)"
           value={author}
           onChange={(e) => setAuthor(e.target.value)}
-          style={{
-            width: '100%',
-            marginBottom: '1rem',
-            padding: '0.75rem',
-            borderRadius: '8px',
-            border: '1px solid #ccc',
-            fontSize: '1rem',
-          }}
+          style={inputStyle}
         />
       )}
 
@@ -126,14 +116,7 @@ export default function NewQuestionWithImage() {
         placeholder="Enter your question (at least 10 characters)"
         value={text}
         onChange={(e) => setText(e.target.value)}
-        style={{
-          width: '100%',
-          marginBottom: '1rem',
-          padding: '0.75rem',
-          borderRadius: '8px',
-          border: '1px solid #ccc',
-          fontSize: '1rem',
-        }}
+        style={inputStyle}
       />
 
       <input
@@ -150,28 +133,17 @@ export default function NewQuestionWithImage() {
         value={imageUrlInput}
         onChange={handleImageUrlInput}
         disabled={!!file}
-        style={{
-          width: '100%',
-          marginBottom: '1rem',
-          padding: '0.75rem',
-          borderRadius: '8px',
-          border: '1px solid #ccc',
-          fontSize: '1rem',
-        }}
+        style={inputStyle}
       />
 
-      {(previewUrl || imageUrlInput) && (
-        <img
-          src={imageUrlInput || previewUrl}
-          alt="Preview"
-          style={{
-            maxWidth: '100%',
-            maxHeight: '300px',
-            borderRadius: '8px',
-            marginBottom: '1rem',
-            border: '1px solid #eee',
-          }}
-        />
+      {imagePreviewSrc && (
+        <div className="w-full max-w-[500px] h-[300px] mx-auto mb-4 overflow-hidden rounded-lg border border-gray-300 bg-white shadow">
+          <img
+            src={imagePreviewSrc}
+            alt="Preview"
+            className="w-full h-full object-contain"
+          />
+        </div>
       )}
 
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -179,13 +151,7 @@ export default function NewQuestionWithImage() {
           type="button"
           onClick={resetForm}
           disabled={uploading}
-          style={{
-            padding: '10px 20px',
-            border: '1px solid #ccc',
-            borderRadius: '6px',
-            backgroundColor: 'white',
-            cursor: 'pointer',
-          }}
+          style={buttonStyleOutline}
         >
           Clear
         </button>
@@ -193,15 +159,7 @@ export default function NewQuestionWithImage() {
         <button
           type="submit"
           disabled={uploading}
-          style={{
-            padding: '10px 20px',
-            backgroundColor: '#084DC5',
-            color: 'white',
-            border: 'none',
-            borderRadius: '6px',
-            cursor: 'pointer',
-            marginLeft: '1rem',
-          }}
+          style={buttonStylePrimary}
         >
           {uploading ? 'Sending...' : 'Submit question'}
         </button>
@@ -209,3 +167,31 @@ export default function NewQuestionWithImage() {
     </form>
   );
 }
+
+// 🔧 Reuse styles
+const inputStyle = {
+  width: '100%',
+  marginBottom: '1rem',
+  padding: '0.75rem',
+  borderRadius: '8px',
+  border: '1px solid #ccc',
+  fontSize: '1rem',
+};
+
+const buttonStyleOutline = {
+  padding: '10px 20px',
+  border: '1px solid #ccc',
+  borderRadius: '6px',
+  backgroundColor: 'white',
+  cursor: 'pointer',
+};
+
+const buttonStylePrimary = {
+  padding: '10px 20px',
+  backgroundColor: '#084DC5',
+  color: 'white',
+  border: 'none',
+  borderRadius: '6px',
+  cursor: 'pointer',
+  marginLeft: '1rem',
+};

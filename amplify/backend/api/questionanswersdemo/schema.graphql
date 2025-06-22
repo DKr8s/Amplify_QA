@@ -3,7 +3,9 @@ type Answer @model @auth(rules: [{allow: public}]) {
   id: ID!
   Author: String
   Text: String!
+   createdAt: AWSDateTime
   questionID: ID! @index(name: "byQuestion")
+  parentID: ID @index(name: "byParent")
 } 
 type Question @model @auth(rules: [{ allow: public }]) {
   id: ID!
@@ -14,3 +16,4 @@ type Question @model @auth(rules: [{ allow: public }]) {
   createdAt: AWSDateTime
   updatedAt: AWSDateTime
 }
+ 

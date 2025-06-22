@@ -31,9 +31,13 @@ export default function AnswerUpdateForm(props) {
   const initialValues = {
     Text: "",
     Author: "",
+    createdAt: "",
+    parentID: "",
   };
   const [Text, setText] = React.useState(initialValues.Text);
   const [Author, setAuthor] = React.useState(initialValues.Author);
+  const [createdAt, setCreatedAt] = React.useState(initialValues.createdAt);
+  const [parentID, setParentID] = React.useState(initialValues.parentID);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
     const cleanValues = answerRecord
@@ -41,6 +45,8 @@ export default function AnswerUpdateForm(props) {
       : initialValues;
     setText(cleanValues.Text);
     setAuthor(cleanValues.Author);
+    setCreatedAt(cleanValues.createdAt);
+    setParentID(cleanValues.parentID);
     setErrors({});
   };
   const [answerRecord, setAnswerRecord] = React.useState(answerModelProp);
@@ -57,6 +63,8 @@ export default function AnswerUpdateForm(props) {
   const validations = {
     Text: [{ type: "Required" }],
     Author: [],
+    createdAt: [],
+    parentID: [],
   };
   const runValidationTasks = async (
     fieldName,
@@ -75,6 +83,23 @@ export default function AnswerUpdateForm(props) {
     setErrors((errors) => ({ ...errors, [fieldName]: validationResponse }));
     return validationResponse;
   };
+  const convertToLocal = (date) => {
+    const df = new Intl.DateTimeFormat("default", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      calendar: "iso8601",
+      numberingSystem: "latn",
+      hourCycle: "h23",
+    });
+    const parts = df.formatToParts(date).reduce((acc, part) => {
+      acc[part.type] = part.value;
+      return acc;
+    }, {});
+    return `${parts.year}-${parts.month}-${parts.day}T${parts.hour}:${parts.minute}`;
+  };
   return (
     <Grid
       as="form"
@@ -86,6 +111,8 @@ export default function AnswerUpdateForm(props) {
         let modelFields = {
           Text,
           Author,
+          createdAt,
+          parentID,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -143,6 +170,8 @@ export default function AnswerUpdateForm(props) {
             const modelFields = {
               Text: value,
               Author,
+              createdAt,
+              parentID,
             };
             const result = onChange(modelFields);
             value = result?.Text ?? value;
@@ -168,6 +197,8 @@ export default function AnswerUpdateForm(props) {
             const modelFields = {
               Text,
               Author: value,
+              createdAt,
+              parentID,
             };
             const result = onChange(modelFields);
             value = result?.Author ?? value;
@@ -181,6 +212,62 @@ export default function AnswerUpdateForm(props) {
         errorMessage={errors.Author?.errorMessage}
         hasError={errors.Author?.hasError}
         {...getOverrideProps(overrides, "Author")}
+      ></TextField>
+      <TextField
+        label="Created at"
+        isRequired={false}
+        isReadOnly={false}
+        type="datetime-local"
+        value={createdAt && convertToLocal(new Date(createdAt))}
+        onChange={(e) => {
+          let value =
+            e.target.value === "" ? "" : new Date(e.target.value).toISOString();
+          if (onChange) {
+            const modelFields = {
+              Text,
+              Author,
+              createdAt: value,
+              parentID,
+            };
+            const result = onChange(modelFields);
+            value = result?.createdAt ?? value;
+          }
+          if (errors.createdAt?.hasError) {
+            runValidationTasks("createdAt", value);
+          }
+          setCreatedAt(value);
+        }}
+        onBlur={() => runValidationTasks("createdAt", createdAt)}
+        errorMessage={errors.createdAt?.errorMessage}
+        hasError={errors.createdAt?.hasError}
+        {...getOverrideProps(overrides, "createdAt")}
+      ></TextField>
+      <TextField
+        label="Parent id"
+        isRequired={false}
+        isReadOnly={false}
+        value={parentID}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              Text,
+              Author,
+              createdAt,
+              parentID: value,
+            };
+            const result = onChange(modelFields);
+            value = result?.parentID ?? value;
+          }
+          if (errors.parentID?.hasError) {
+            runValidationTasks("parentID", value);
+          }
+          setParentID(value);
+        }}
+        onBlur={() => runValidationTasks("parentID", parentID)}
+        errorMessage={errors.parentID?.errorMessage}
+        hasError={errors.parentID?.hasError}
+        {...getOverrideProps(overrides, "parentID")}
       ></TextField>
       <Flex
         justifyContent="space-between"

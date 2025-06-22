@@ -24,6 +24,13 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
+                "createdAt": {
+                    "name": "createdAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": []
+                },
                 "questionID": {
                     "name": "questionID",
                     "isArray": false,
@@ -31,13 +38,12 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
-                "createdAt": {
-                    "name": "createdAt",
+                "parentID": {
+                    "name": "parentID",
                     "isArray": false,
-                    "type": "AWSDateTime",
+                    "type": "ID",
                     "isRequired": false,
-                    "attributes": [],
-                    "isReadOnly": true
+                    "attributes": []
                 },
                 "updatedAt": {
                     "name": "updatedAt",
@@ -61,6 +67,15 @@ export const schema = {
                         "name": "byQuestion",
                         "fields": [
                             "questionID"
+                        ]
+                    }
+                },
+                {
+                    "type": "key",
+                    "properties": {
+                        "name": "byParent",
+                        "fields": [
+                            "parentID"
                         ]
                     }
                 },
@@ -173,5 +188,5 @@ export const schema = {
     "enums": {},
     "nonModels": {},
     "codegenVersion": "3.4.4",
-    "version": "38f19aab79317563f91c4e4c49529c76"
+    "version": "098758394a0757e08d54b35a4d499126"
 };

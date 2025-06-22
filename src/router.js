@@ -5,6 +5,7 @@ import { Authenticator } from '@aws-amplify/ui-react';
 import AppLayout from './AppLayout';
 import QuestionPage from './QuestionPage';
 import AdminDashboard from './AdminDashboard';
+import CleanupInvalidQuestions from './CleanupInvalidQuestions';
 
 export default function Router() {
   return (
@@ -14,6 +15,7 @@ export default function Router() {
           <Routes>
             <Route path="/" element={<QuestionPage />} />
             <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/cleanup" element={<CleanupInvalidQuestions />} />
           </Routes>
         </AppLayout>
       )}

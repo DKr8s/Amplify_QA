@@ -18,6 +18,7 @@ import { studioTheme } from './ui-components';
 import AppNavbar from './AppNavbar';
 import AuthPage from './AuthPage';
 import NewQuestionWithImage from './NewQuestionWithImage';
+import CleanupInvalidQuestions from './CleanupInvalidQuestions'; // thêm trên cùng
 
 Amplify.configure(awsconfig);
 
@@ -32,7 +33,8 @@ root.render(
           <Routes>
  <Route path="/" element={<App />} />
   <Route path="/auth" element={<AuthPage />} /> {/* 👈 CHỈ CẦN THẾ NÀY */}
-  
+  <Route path="/cleanup" element={<CleanupInvalidQuestions />} />
+
   <Route path="/question/:id" element={<QuestionPage />} />
   <Route path="/admin" element={<AdminDashboard />} />
   <Route path="/new-question" element={<NewQuestionWithImage />} />

@@ -7,8 +7,9 @@ export const onCreateAnswer = /* GraphQL */ `
       id
       Author
       Text
-      questionID
       createdAt
+      questionID
+      parentID
       updatedAt
       _version
       _deleted
@@ -23,8 +24,9 @@ export const onUpdateAnswer = /* GraphQL */ `
       id
       Author
       Text
-      questionID
       createdAt
+      questionID
+      parentID
       updatedAt
       _version
       _deleted
@@ -39,8 +41,9 @@ export const onDeleteAnswer = /* GraphQL */ `
       id
       Author
       Text
-      questionID
       createdAt
+      questionID
+      parentID
       updatedAt
       _version
       _deleted
@@ -61,8 +64,9 @@ export const onCreateQuestion = /* GraphQL */ `
           id
           Author
           Text
-          questionID
           createdAt
+          questionID
+          parentID
           updatedAt
           _version
           _deleted
@@ -94,8 +98,9 @@ export const onUpdateQuestion = /* GraphQL */ `
           id
           Author
           Text
-          questionID
           createdAt
+          questionID
+          parentID
           updatedAt
           _version
           _deleted
@@ -127,8 +132,9 @@ export const onDeleteQuestion = /* GraphQL */ `
           id
           Author
           Text
-          questionID
           createdAt
+          questionID
+          parentID
           updatedAt
           _version
           _deleted
