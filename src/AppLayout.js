@@ -1,13 +1,16 @@
-import React from 'react';
+import AppNavbar from './AppNavbar';
 import { Outlet } from 'react-router-dom';
+import { useAuthenticator } from '@aws-amplify/ui-react';
 
-export default function AppLayout({ user, signOut }) {
+export default function AppLayout() {
+  const { user, signOut } = useAuthenticator((context) => [context.user]);
+
   return (
-    <div style={{ padding: 20 }}>
-      <h2>Xin chào, {user?.username}</h2>
-      <button onClick={signOut}>Đăng xuất</button>
-      <hr />
-      <Outlet />
+    <div>
+      <AppNavbar user={user} signOut={signOut} />
+      <main className="p-6">
+        <Outlet />
+      </main>
     </div>
   );
 }
