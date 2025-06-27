@@ -76,6 +76,112 @@ export const syncAnswers = /* GraphQL */ `
     }
   }
 `;
+export const getQuestion = /* GraphQL */ `
+  query GetQuestion($id: ID!) {
+    getQuestion(id: $id) {
+      id
+      Author
+      Text
+      imageUrl
+      createdAt
+      updatedAt
+      upvotes
+      downvotes
+      Answers {
+        items {
+          id
+          Author
+          Text
+          createdAt
+          questionID
+          parentID
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          __typename
+        }
+        nextToken
+        startedAt
+        __typename
+      }
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const listQuestions = /* GraphQL */ `
+  query ListQuestions(
+    $filter: ModelQuestionFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listQuestions(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        Author
+        Text
+        imageUrl
+        createdAt
+        updatedAt
+        upvotes
+        downvotes
+        Answers {
+          nextToken
+          startedAt
+          __typename
+        }
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
+  }
+`;
+export const syncQuestions = /* GraphQL */ `
+  query SyncQuestions(
+    $filter: ModelQuestionFilterInput
+    $limit: Int
+    $nextToken: String
+    $lastSync: AWSTimestamp
+  ) {
+    syncQuestions(
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+      lastSync: $lastSync
+    ) {
+      items {
+        id
+        Author
+        Text
+        imageUrl
+        createdAt
+        updatedAt
+        upvotes
+        downvotes
+        Answers {
+          nextToken
+          startedAt
+          __typename
+        }
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
+  }
+`;
 export const answersByQuestionID = /* GraphQL */ `
   query AnswersByQuestionID(
     $questionID: ID!
@@ -132,106 +238,6 @@ export const answersByParentID = /* GraphQL */ `
         createdAt
         questionID
         parentID
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        __typename
-      }
-      nextToken
-      startedAt
-      __typename
-    }
-  }
-`;
-export const getQuestion = /* GraphQL */ `
-  query GetQuestion($id: ID!) {
-    getQuestion(id: $id) {
-      id
-      Author
-      Text
-      imageUrl
-      Answers {
-        items {
-          id
-          Author
-          Text
-          createdAt
-          questionID
-          parentID
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-          __typename
-        }
-        nextToken
-        startedAt
-        __typename
-      }
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
-  }
-`;
-export const listQuestions = /* GraphQL */ `
-  query ListQuestions(
-    $filter: ModelQuestionFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    listQuestions(filter: $filter, limit: $limit, nextToken: $nextToken) {
-      items {
-        id
-        Author
-        Text
-        imageUrl
-        Answers {
-          nextToken
-          startedAt
-          __typename
-        }
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        __typename
-      }
-      nextToken
-      startedAt
-      __typename
-    }
-  }
-`;
-export const syncQuestions = /* GraphQL */ `
-  query SyncQuestions(
-    $filter: ModelQuestionFilterInput
-    $limit: Int
-    $nextToken: String
-    $lastSync: AWSTimestamp
-  ) {
-    syncQuestions(
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-      lastSync: $lastSync
-    ) {
-      items {
-        id
-        Author
-        Text
-        imageUrl
-        Answers {
-          nextToken
-          startedAt
-          __typename
-        }
-        createdAt
         updatedAt
         _version
         _deleted

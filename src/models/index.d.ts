@@ -48,9 +48,11 @@ type EagerQuestion = {
   readonly Author?: string | null;
   readonly Text: string;
   readonly imageUrl?: string | null;
-  readonly Answers?: (Answer | null)[] | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
+  readonly upvotes?: number | null;
+  readonly downvotes?: number | null;
+  readonly Answers?: (Answer | null)[] | null;
 }
 
 type LazyQuestion = {
@@ -61,9 +63,11 @@ type LazyQuestion = {
   readonly Author?: string | null;
   readonly Text: string;
   readonly imageUrl?: string | null;
-  readonly Answers: AsyncCollection<Answer>;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
+  readonly upvotes?: number | null;
+  readonly downvotes?: number | null;
+  readonly Answers: AsyncCollection<Answer>;
 }
 
 export declare type Question = LazyLoading extends LazyLoadingDisabled ? EagerQuestion : LazyQuestion

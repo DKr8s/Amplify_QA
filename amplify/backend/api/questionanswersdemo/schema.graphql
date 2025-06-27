@@ -11,9 +11,10 @@ type Question @model @auth(rules: [{ allow: public }]) {
   id: ID!
   Author: String
   Text: String!
-  imageUrl: String     # 👈 thêm dòng này
-  Answers: [Answer] @hasMany(indexName: "byQuestion", fields: ["id"])
+  imageUrl: String
   createdAt: AWSDateTime
   updatedAt: AWSDateTime
+  upvotes: Int @default(value: "0")
+  downvotes: Int @default(value: "0")   
+  Answers: [Answer] @hasMany(indexName: "byQuestion", fields: ["id"])
 }
- 

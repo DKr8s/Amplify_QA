@@ -59,6 +59,10 @@ export const onCreateQuestion = /* GraphQL */ `
       Author
       Text
       imageUrl
+      createdAt
+      updatedAt
+      upvotes
+      downvotes
       Answers {
         items {
           id
@@ -77,8 +81,6 @@ export const onCreateQuestion = /* GraphQL */ `
         startedAt
         __typename
       }
-      createdAt
-      updatedAt
       _version
       _deleted
       _lastChangedAt
@@ -93,6 +95,10 @@ export const onUpdateQuestion = /* GraphQL */ `
       Author
       Text
       imageUrl
+      createdAt
+      updatedAt
+      upvotes
+      downvotes
       Answers {
         items {
           id
@@ -111,8 +117,6 @@ export const onUpdateQuestion = /* GraphQL */ `
         startedAt
         __typename
       }
-      createdAt
-      updatedAt
       _version
       _deleted
       _lastChangedAt
@@ -127,6 +131,10 @@ export const onDeleteQuestion = /* GraphQL */ `
       Author
       Text
       imageUrl
+      createdAt
+      updatedAt
+      upvotes
+      downvotes
       Answers {
         items {
           id
@@ -145,8 +153,6 @@ export const onDeleteQuestion = /* GraphQL */ `
         startedAt
         __typename
       }
-      createdAt
-      updatedAt
       _version
       _deleted
       _lastChangedAt
