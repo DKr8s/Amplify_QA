@@ -1,13 +1,26 @@
-
-type Answer @model @auth(rules: [{allow: public}]) {
+type Answer
+  @model
+  @auth(rules: [
+    { allow: public, operations: [create, read, update, delete] },
+    { allow: owner, operations: [create, read, update, delete], identityClaim: "sub" }
+  ]) {
   id: ID!
   Author: String
   Text: String!
-   createdAt: AWSDateTime
+  createdAt: AWSDateTime
   questionID: ID! @index(name: "byQuestion")
   parentID: ID @index(name: "byParent")
-} 
-type Question @model @auth(rules: [{ allow: public }]) {
+  imageUrl: String
+  upvotes: Int @default(value: "0")
+  downvotes: Int @default(value: "0")
+}
+
+type Question
+  @model
+  @auth(rules: [
+    { allow: public, operations: [create, read, update, delete] },
+    { allow: owner, operations: [create, read, update, delete], identityClaim: "sub" }
+  ]) {
   id: ID!
   Author: String
   Text: String!
@@ -15,6 +28,6 @@ type Question @model @auth(rules: [{ allow: public }]) {
   createdAt: AWSDateTime
   updatedAt: AWSDateTime
   upvotes: Int @default(value: "0")
-  downvotes: Int @default(value: "0")   
+  downvotes: Int @default(value: "0")
   Answers: [Answer] @hasMany(indexName: "byQuestion", fields: ["id"])
 }

@@ -5,8 +5,7 @@ import { listQuestions } from './graphql/queries';
 import { updateQuestion } from './graphql/mutations';
 import { Link } from "react-router-dom";
 import SearchInput from './ui-components/SearchInput';
-import { FaFacebookF, FaFacebookMessenger, FaTwitter } from "react-icons/fa";
-import { SiZalo } from "react-icons/si";
+import { FaFacebookF, FaTwitter } from "react-icons/fa";
 
 const client = generateClient();
 
@@ -18,31 +17,33 @@ const QuestionsPage = () => {
   const [animateId, setAnimateId] = useState(null);
   const [animateType, setAnimateType] = useState(null);
   const [shareModalId, setShareModalId] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [nextTokens, setNextTokens] = useState({ 1: undefined });
+  const limit = 20;
 
-  const fetchQuestions = async () => {
+  const fetchQuestions = async (page = 1) => {
     setLoading(true);
     try {
       const filter = {};
-      if (searchText.trim()) {
-        filter.Text = { contains: searchText.trim() };
-      }
-      if (authorText.trim()) {
-        filter.Author = { contains: authorText.trim() };
-      }
+      if (searchText.trim()) filter.Text = { contains: searchText.trim() };
+      if (authorText.trim()) filter.Author = { contains: authorText.trim() };
 
       const res = await client.graphql({
         query: listQuestions,
         variables: {
           filter: Object.keys(filter).length ? filter : undefined,
-          limit: 1000,
+          limit,
+          nextToken: nextTokens[page],
         },
       });
 
-      const sorted = [...res.data.listQuestions.items]
-        .filter((q) => q && q.createdAt)
-        .sort((a, b) => (b.upvotes || 0) - (a.upvotes || 0));
+      const items = res.data.listQuestions.items.filter((q) => q && q.createdAt);
+      const token = res.data.listQuestions.nextToken;
 
-      setQuestions(sorted);
+      setQuestions(items.sort((a, b) => (b.upvotes || 0) - (a.upvotes || 0)));
+      setCurrentPage(page);
+
+      setNextTokens((prev) => ({ ...prev, [page + 1]: token }));
     } catch (err) {
       console.error('❌ GraphQL fetch error:', err);
     } finally {
@@ -69,11 +70,9 @@ const QuestionsPage = () => {
       });
 
       const updatedQuestion = updated.data.updateQuestion;
-      setQuestions((prev) =>
-        [...prev]
-          .map((q) => (q.id === updatedQuestion.id ? updatedQuestion : q))
-          .sort((a, b) => (b.upvotes || 0) - (a.upvotes || 0))
-      );
+      setQuestions((prev) => [...prev]
+        .map((q) => (q.id === updatedQuestion.id ? updatedQuestion : q))
+        .sort((a, b) => (b.upvotes || 0) - (a.upvotes || 0)));
     } catch (err) {
       console.error("❌ Vote failed:", err);
     }
@@ -94,19 +93,17 @@ const QuestionsPage = () => {
     const url = `${window.location.origin}/question/${id}`;
     const encodedURL = encodeURIComponent(url);
     const links = [
-      { label: "Facebook", url: `https://www.facebook.com/sharer/sharer.php?u=${encodedURL}`, icon: <FaFacebookF />, color: "hover:text-blue-600" },
-      { label: "Messenger", url: `https://www.facebook.com/dialog/send?link=${encodedURL}`, icon: <FaFacebookMessenger />, color: "hover:text-blue-500" },
-      { label: "Twitter", url: `https://twitter.com/intent/tweet?url=${encodedURL}`, icon: <FaTwitter />, color: "hover:text-sky-500" },
-      { label: "Zalo", url: `https://zalo.me/share?url=${encodedURL}`, icon: <SiZalo />, color: "hover:text-indigo-500" },
-    ];
+  { label: "Facebook", url: `https://www.facebook.com/sharer/sharer.php?u=${encodedURL}`, icon: <FaFacebookF />, color: "hover:text-blue-600" },
+  { label: "Twitter", url: `https://twitter.com/intent/tweet?url=${encodedURL}`, icon: <FaTwitter />, color: "hover:text-sky-500" },
+];
 
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div className="bg-white rounded-xl shadow-lg p-6 w-full max-w-sm">
           <h2 className="text-xl font-semibold text-blue-800 text-center mb-4 flex flex-col items-center">
-  <span className="text-3xl mb-1">📤</span>
-  <span className="border-b border-blue-300 pb-1">Share the question</span>
-</h2>
+            <span className="text-3xl mb-1">📤</span>
+            <span className="border-b border-blue-300 pb-1">Share this question</span>
+          </h2>
           <ul className="space-y-3">
             {links.map((link) => (
               <li key={link.label}>
@@ -126,11 +123,11 @@ const QuestionsPage = () => {
             <button
               onClick={() => {
                 navigator.clipboard.writeText(`${window.location.origin}/question/${shareModalId}`);
-                alert("✅ Link has been copied!");
+                alert("✅ Link copied!");
               }}
               className="w-full bg-blue-100 hover:bg-blue-200 text-blue-800 font-medium py-2 rounded text-sm"
             >
-              📋 Copy question link
+              📋 Copy link
             </button>
           </div>
 
@@ -138,7 +135,7 @@ const QuestionsPage = () => {
             onClick={() => setShareModalId(null)}
             className="mt-6 w-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 rounded"
           >
-            Đóng
+            Close
           </button>
         </div>
       </div>
@@ -146,7 +143,7 @@ const QuestionsPage = () => {
   };
 
   useEffect(() => {
-    fetchQuestions();
+    fetchQuestions(1);
   }, [searchText, authorText]);
 
   return (
@@ -173,47 +170,79 @@ const QuestionsPage = () => {
           No matching questions found 🤷‍♂️
         </div>
       ) : (
-        <div className="space-y-4">
-          {questions.map((q) => (
-            <div
-              key={q.id}
-              className="p-4 bg-white rounded shadow hover:shadow-md transition"
-            >
-              <div className="flex justify-between items-center mb-1 text-sm text-gray-600">
-                <span>✍ {q.Author || "anonymous"} • {new Date(q.createdAt).toLocaleDateString()}</span>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => handleVoteAnimation(q.id, "up")}
-                    className={`text-green-600 hover:text-green-800 transition-transform duration-200 ${
-                      animateId === q.id && animateType === "up" ? "scale-125" : ""
-                    }`}
-                  >
-                    👍 {q.upvotes || 0}
-                  </button>
-                  <button
-                    onClick={() => handleVoteAnimation(q.id, "down")}
-                    className={`text-red-600 hover:text-red-800 transition-transform duration-200 ${
-                      animateId === q.id && animateType === "down" ? "scale-125" : ""
-                    }`}
-                  >
-                    👎 {q.downvotes || 0}
-                  </button>
-                  <button
-                    onClick={() => setShareModalId(q.id)}
-                    className="text-blue-500 hover:underline"
-                  >
-                    📤 Share
-                  </button>
+        <>
+          <div className="space-y-4">
+            {questions.map((q) => (
+              <div
+                key={q.id}
+                className="p-4 bg-white rounded shadow hover:shadow-md transition"
+              >
+                <div className="flex justify-between items-center mb-1 text-sm text-gray-600">
+                  <span>✍ {q.Author || "anonymous"} • {new Date(q.createdAt).toLocaleDateString()}</span>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => handleVoteAnimation(q.id, "up")}
+                      className={`text-green-600 hover:text-green-800 transition-transform duration-200 ${
+                        animateId === q.id && animateType === "up" ? "scale-125" : ""
+                      }`}
+                    >
+                      👍 {q.upvotes || 0}
+                    </button>
+                    <button
+                      onClick={() => handleVoteAnimation(q.id, "down")}
+                      className={`text-red-600 hover:text-red-800 transition-transform duration-200 ${
+                        animateId === q.id && animateType === "down" ? "scale-125" : ""
+                      }`}
+                    >
+                      👎 {q.downvotes || 0}
+                    </button>
+                    <button
+                      onClick={() => setShareModalId(q.id)}
+                      className="text-blue-500 hover:underline"
+                    >
+                      📤 Share
+                    </button>
+                  </div>
                 </div>
+                <Link to={`/question/${q.id}`}>
+                  <h3 className="text-lg font-semibold text-blue-800 hover:underline">
+                    {q.Text}
+                  </h3>
+                </Link>
               </div>
-              <Link to={`/question/${q.id}`}>
-                <h3 className="text-lg font-semibold text-blue-800 hover:underline">
-                  {q.Text}
-                </h3>
-              </Link>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+
+          <div className="flex justify-center mt-6 gap-2">
+            <button
+              onClick={() => fetchQuestions(currentPage - 1)}
+              className="px-3 py-1 rounded bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
+              disabled={currentPage === 1}
+            >
+              ← Prev
+            </button>
+
+            {Array.from({ length: currentPage + 2 }, (_, i) => i + 1)
+              .slice(Math.max(0, currentPage - 3), currentPage + 2)
+              .map((page) => (
+                <button
+                  key={page}
+                  onClick={() => fetchQuestions(page)}
+                  className={`px-3 py-1 rounded ${page === currentPage ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
+                >
+                  {page}
+                </button>
+              ))}
+
+            <button
+              onClick={() => fetchQuestions(currentPage + 1)}
+              className="px-3 py-1 rounded bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
+              disabled={!nextTokens[currentPage + 1]}
+            >
+              Next →
+            </button>
+          </div>
+        </>
       )}
 
       {renderShareModal(shareModalId)}

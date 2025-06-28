@@ -23,12 +23,26 @@
       "service": "API Gateway"
     },
     "questionanswersdemo": {
-      "dependsOn": [],
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "questionanswersdemo661b9258"
+        }
+      ],
       "output": {
         "authConfig": {
           "additionalAuthenticationProviders": [
             {
               "authenticationType": "AWS_IAM"
+            },
+            {
+              "authenticationType": "AMAZON_COGNITO_USER_POOLS",
+              "userPoolConfig": {
+                "userPoolId": "authquestionanswersdemo661b9258"
+              }
             }
           ],
           "defaultAuthentication": {

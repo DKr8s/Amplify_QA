@@ -45,6 +45,27 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
+                "imageUrl": {
+                    "name": "imageUrl",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "upvotes": {
+                    "name": "upvotes",
+                    "isArray": false,
+                    "type": "Int",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "downvotes": {
+                    "name": "downvotes",
+                    "isArray": false,
+                    "type": "Int",
+                    "isRequired": false,
+                    "attributes": []
+                },
                 "updatedAt": {
                     "name": "updatedAt",
                     "isArray": false,
@@ -87,10 +108,22 @@ export const schema = {
                                 "allow": "public",
                                 "operations": [
                                     "create",
+                                    "read",
                                     "update",
-                                    "delete",
-                                    "read"
+                                    "delete"
                                 ]
+                            },
+                            {
+                                "provider": "userPools",
+                                "ownerField": "owner",
+                                "allow": "owner",
+                                "operations": [
+                                    "create",
+                                    "read",
+                                    "update",
+                                    "delete"
+                                ],
+                                "identityClaim": "sub"
                             }
                         ]
                     }
@@ -188,10 +221,22 @@ export const schema = {
                                 "allow": "public",
                                 "operations": [
                                     "create",
+                                    "read",
                                     "update",
-                                    "delete",
-                                    "read"
+                                    "delete"
                                 ]
+                            },
+                            {
+                                "provider": "userPools",
+                                "ownerField": "owner",
+                                "allow": "owner",
+                                "operations": [
+                                    "create",
+                                    "read",
+                                    "update",
+                                    "delete"
+                                ],
+                                "identityClaim": "sub"
                             }
                         ]
                     }
@@ -202,5 +247,5 @@ export const schema = {
     "enums": {},
     "nonModels": {},
     "codegenVersion": "3.4.4",
-    "version": "6773ccb9f72894ca6941917c55e76d32"
+    "version": "71f72a44f1c50256f5e3bb96d3f81e21"
 };

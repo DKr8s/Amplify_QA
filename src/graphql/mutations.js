@@ -13,10 +13,14 @@ export const createAnswer = /* GraphQL */ `
       createdAt
       questionID
       parentID
+      imageUrl
+      upvotes
+      downvotes
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      owner
       __typename
     }
   }
@@ -33,10 +37,14 @@ export const updateAnswer = /* GraphQL */ `
       createdAt
       questionID
       parentID
+      imageUrl
+      upvotes
+      downvotes
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      owner
       __typename
     }
   }
@@ -53,10 +61,14 @@ export const deleteAnswer = /* GraphQL */ `
       createdAt
       questionID
       parentID
+      imageUrl
+      upvotes
+      downvotes
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      owner
       __typename
     }
   }
@@ -83,10 +95,14 @@ export const createQuestion = /* GraphQL */ `
           createdAt
           questionID
           parentID
+          imageUrl
+          upvotes
+          downvotes
           updatedAt
           _version
           _deleted
           _lastChangedAt
+          owner
           __typename
         }
         nextToken
@@ -96,6 +112,7 @@ export const createQuestion = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
+      owner
       __typename
     }
   }
@@ -122,10 +139,14 @@ export const updateQuestion = /* GraphQL */ `
           createdAt
           questionID
           parentID
+          imageUrl
+          upvotes
+          downvotes
           updatedAt
           _version
           _deleted
           _lastChangedAt
+          owner
           __typename
         }
         nextToken
@@ -135,6 +156,7 @@ export const updateQuestion = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
+      owner
       __typename
     }
   }
@@ -161,10 +183,14 @@ export const deleteQuestion = /* GraphQL */ `
           createdAt
           questionID
           parentID
+          imageUrl
+          upvotes
+          downvotes
           updatedAt
           _version
           _deleted
           _lastChangedAt
+          owner
           __typename
         }
         nextToken
@@ -174,6 +200,7 @@ export const deleteQuestion = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
+      owner
       __typename
     }
   }

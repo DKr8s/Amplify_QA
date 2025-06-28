@@ -10,10 +10,14 @@ export const getAnswer = /* GraphQL */ `
       createdAt
       questionID
       parentID
+      imageUrl
+      upvotes
+      downvotes
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      owner
       __typename
     }
   }
@@ -32,10 +36,14 @@ export const listAnswers = /* GraphQL */ `
         createdAt
         questionID
         parentID
+        imageUrl
+        upvotes
+        downvotes
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        owner
         __typename
       }
       nextToken
@@ -64,10 +72,90 @@ export const syncAnswers = /* GraphQL */ `
         createdAt
         questionID
         parentID
+        imageUrl
+        upvotes
+        downvotes
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        owner
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
+  }
+`;
+export const answersByQuestionID = /* GraphQL */ `
+  query AnswersByQuestionID(
+    $questionID: ID!
+    $sortDirection: ModelSortDirection
+    $filter: ModelAnswerFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    answersByQuestionID(
+      questionID: $questionID
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        Author
+        Text
+        createdAt
+        questionID
+        parentID
+        imageUrl
+        upvotes
+        downvotes
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        owner
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
+  }
+`;
+export const answersByParentID = /* GraphQL */ `
+  query AnswersByParentID(
+    $parentID: ID!
+    $sortDirection: ModelSortDirection
+    $filter: ModelAnswerFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    answersByParentID(
+      parentID: $parentID
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        Author
+        Text
+        createdAt
+        questionID
+        parentID
+        imageUrl
+        upvotes
+        downvotes
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        owner
         __typename
       }
       nextToken
@@ -95,10 +183,14 @@ export const getQuestion = /* GraphQL */ `
           createdAt
           questionID
           parentID
+          imageUrl
+          upvotes
+          downvotes
           updatedAt
           _version
           _deleted
           _lastChangedAt
+          owner
           __typename
         }
         nextToken
@@ -108,6 +200,7 @@ export const getQuestion = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
+      owner
       __typename
     }
   }
@@ -136,6 +229,7 @@ export const listQuestions = /* GraphQL */ `
         _version
         _deleted
         _lastChangedAt
+        owner
         __typename
       }
       nextToken
@@ -174,74 +268,7 @@ export const syncQuestions = /* GraphQL */ `
         _version
         _deleted
         _lastChangedAt
-        __typename
-      }
-      nextToken
-      startedAt
-      __typename
-    }
-  }
-`;
-export const answersByQuestionID = /* GraphQL */ `
-  query AnswersByQuestionID(
-    $questionID: ID!
-    $sortDirection: ModelSortDirection
-    $filter: ModelAnswerFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    answersByQuestionID(
-      questionID: $questionID
-      sortDirection: $sortDirection
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-    ) {
-      items {
-        id
-        Author
-        Text
-        createdAt
-        questionID
-        parentID
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        __typename
-      }
-      nextToken
-      startedAt
-      __typename
-    }
-  }
-`;
-export const answersByParentID = /* GraphQL */ `
-  query AnswersByParentID(
-    $parentID: ID!
-    $sortDirection: ModelSortDirection
-    $filter: ModelAnswerFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    answersByParentID(
-      parentID: $parentID
-      sortDirection: $sortDirection
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-    ) {
-      items {
-        id
-        Author
-        Text
-        createdAt
-        questionID
-        parentID
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
+        owner
         __typename
       }
       nextToken

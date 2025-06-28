@@ -17,6 +17,9 @@ type EagerAnswer = {
   readonly createdAt?: string | null;
   readonly questionID: string;
   readonly parentID?: string | null;
+  readonly imageUrl?: string | null;
+  readonly upvotes?: number | null;
+  readonly downvotes?: number | null;
   readonly updatedAt?: string | null;
 }
 
@@ -31,6 +34,9 @@ type LazyAnswer = {
   readonly createdAt?: string | null;
   readonly questionID: string;
   readonly parentID?: string | null;
+  readonly imageUrl?: string | null;
+  readonly upvotes?: number | null;
+  readonly downvotes?: number | null;
   readonly updatedAt?: string | null;
 }
 
