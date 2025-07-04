@@ -10,12 +10,12 @@ export const createAnswer = /* GraphQL */ `
       id
       Author
       Text
-      createdAt
       questionID
       parentID
       imageUrl
       upvotes
       downvotes
+      createdAt
       updatedAt
       _version
       _deleted
@@ -34,12 +34,12 @@ export const updateAnswer = /* GraphQL */ `
       id
       Author
       Text
-      createdAt
       questionID
       parentID
       imageUrl
       upvotes
       downvotes
+      createdAt
       updatedAt
       _version
       _deleted
@@ -58,12 +58,12 @@ export const deleteAnswer = /* GraphQL */ `
       id
       Author
       Text
-      createdAt
       questionID
       parentID
       imageUrl
       upvotes
       downvotes
+      createdAt
       updatedAt
       _version
       _deleted
@@ -83,8 +83,6 @@ export const createQuestion = /* GraphQL */ `
       Author
       Text
       imageUrl
-      createdAt
-      updatedAt
       upvotes
       downvotes
       Answers {
@@ -92,12 +90,12 @@ export const createQuestion = /* GraphQL */ `
           id
           Author
           Text
-          createdAt
           questionID
           parentID
           imageUrl
           upvotes
           downvotes
+          createdAt
           updatedAt
           _version
           _deleted
@@ -109,6 +107,8 @@ export const createQuestion = /* GraphQL */ `
         startedAt
         __typename
       }
+      createdAt
+      updatedAt
       _version
       _deleted
       _lastChangedAt
@@ -127,8 +127,6 @@ export const updateQuestion = /* GraphQL */ `
       Author
       Text
       imageUrl
-      createdAt
-      updatedAt
       upvotes
       downvotes
       Answers {
@@ -136,12 +134,12 @@ export const updateQuestion = /* GraphQL */ `
           id
           Author
           Text
-          createdAt
           questionID
           parentID
           imageUrl
           upvotes
           downvotes
+          createdAt
           updatedAt
           _version
           _deleted
@@ -153,6 +151,8 @@ export const updateQuestion = /* GraphQL */ `
         startedAt
         __typename
       }
+      createdAt
+      updatedAt
       _version
       _deleted
       _lastChangedAt
@@ -171,8 +171,6 @@ export const deleteQuestion = /* GraphQL */ `
       Author
       Text
       imageUrl
-      createdAt
-      updatedAt
       upvotes
       downvotes
       Answers {
@@ -180,12 +178,12 @@ export const deleteQuestion = /* GraphQL */ `
           id
           Author
           Text
-          createdAt
           questionID
           parentID
           imageUrl
           upvotes
           downvotes
+          createdAt
           updatedAt
           _version
           _deleted
@@ -197,6 +195,8 @@ export const deleteQuestion = /* GraphQL */ `
         startedAt
         __typename
       }
+      createdAt
+      updatedAt
       _version
       _deleted
       _lastChangedAt

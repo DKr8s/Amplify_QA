@@ -14,7 +14,7 @@ export const schema = {
                     "name": "Author",
                     "isArray": false,
                     "type": "String",
-                    "isRequired": false,
+                    "isRequired": true,
                     "attributes": []
                 },
                 "Text": {
@@ -22,13 +22,6 @@ export const schema = {
                     "isArray": false,
                     "type": "String",
                     "isRequired": true,
-                    "attributes": []
-                },
-                "createdAt": {
-                    "name": "createdAt",
-                    "isArray": false,
-                    "type": "AWSDateTime",
-                    "isRequired": false,
                     "attributes": []
                 },
                 "questionID": {
@@ -49,6 +42,13 @@ export const schema = {
                     "name": "imageUrl",
                     "isArray": false,
                     "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "createdAt": {
+                    "name": "createdAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
                     "isRequired": false,
                     "attributes": []
                 },
@@ -81,6 +81,15 @@ export const schema = {
                 {
                     "type": "model",
                     "properties": {}
+                },
+                {
+                    "type": "key",
+                    "properties": {
+                        "name": "byAuthor",
+                        "fields": [
+                            "Author"
+                        ]
+                    }
                 },
                 {
                     "type": "key",
@@ -144,7 +153,7 @@ export const schema = {
                     "name": "Author",
                     "isArray": false,
                     "type": "String",
-                    "isRequired": false,
+                    "isRequired": true,
                     "attributes": []
                 },
                 "Text": {
@@ -214,6 +223,15 @@ export const schema = {
                     "properties": {}
                 },
                 {
+                    "type": "key",
+                    "properties": {
+                        "name": "byAuthor",
+                        "fields": [
+                            "Author"
+                        ]
+                    }
+                },
+                {
                     "type": "auth",
                     "properties": {
                         "rules": [
@@ -247,5 +265,5 @@ export const schema = {
     "enums": {},
     "nonModels": {},
     "codegenVersion": "3.4.4",
-    "version": "71f72a44f1c50256f5e3bb96d3f81e21"
+    "version": "b05c6947efe11027f0aa05faf33e979b"
 };

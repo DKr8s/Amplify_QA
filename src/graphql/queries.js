@@ -7,12 +7,12 @@ export const getAnswer = /* GraphQL */ `
       id
       Author
       Text
-      createdAt
       questionID
       parentID
       imageUrl
       upvotes
       downvotes
+      createdAt
       updatedAt
       _version
       _deleted
@@ -33,12 +33,12 @@ export const listAnswers = /* GraphQL */ `
         id
         Author
         Text
-        createdAt
         questionID
         parentID
         imageUrl
         upvotes
         downvotes
+        createdAt
         updatedAt
         _version
         _deleted
@@ -69,12 +69,50 @@ export const syncAnswers = /* GraphQL */ `
         id
         Author
         Text
-        createdAt
         questionID
         parentID
         imageUrl
         upvotes
         downvotes
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        owner
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
+  }
+`;
+export const answersByAuthor = /* GraphQL */ `
+  query AnswersByAuthor(
+    $Author: String!
+    $sortDirection: ModelSortDirection
+    $filter: ModelAnswerFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    answersByAuthor(
+      Author: $Author
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        Author
+        Text
+        questionID
+        parentID
+        imageUrl
+        upvotes
+        downvotes
+        createdAt
         updatedAt
         _version
         _deleted
@@ -107,12 +145,12 @@ export const answersByQuestionID = /* GraphQL */ `
         id
         Author
         Text
-        createdAt
         questionID
         parentID
         imageUrl
         upvotes
         downvotes
+        createdAt
         updatedAt
         _version
         _deleted
@@ -145,12 +183,12 @@ export const answersByParentID = /* GraphQL */ `
         id
         Author
         Text
-        createdAt
         questionID
         parentID
         imageUrl
         upvotes
         downvotes
+        createdAt
         updatedAt
         _version
         _deleted
@@ -171,8 +209,6 @@ export const getQuestion = /* GraphQL */ `
       Author
       Text
       imageUrl
-      createdAt
-      updatedAt
       upvotes
       downvotes
       Answers {
@@ -180,12 +216,12 @@ export const getQuestion = /* GraphQL */ `
           id
           Author
           Text
-          createdAt
           questionID
           parentID
           imageUrl
           upvotes
           downvotes
+          createdAt
           updatedAt
           _version
           _deleted
@@ -197,6 +233,8 @@ export const getQuestion = /* GraphQL */ `
         startedAt
         __typename
       }
+      createdAt
+      updatedAt
       _version
       _deleted
       _lastChangedAt
@@ -217,8 +255,6 @@ export const listQuestions = /* GraphQL */ `
         Author
         Text
         imageUrl
-        createdAt
-        updatedAt
         upvotes
         downvotes
         Answers {
@@ -226,6 +262,8 @@ export const listQuestions = /* GraphQL */ `
           startedAt
           __typename
         }
+        createdAt
+        updatedAt
         _version
         _deleted
         _lastChangedAt
@@ -256,8 +294,6 @@ export const syncQuestions = /* GraphQL */ `
         Author
         Text
         imageUrl
-        createdAt
-        updatedAt
         upvotes
         downvotes
         Answers {
@@ -265,6 +301,49 @@ export const syncQuestions = /* GraphQL */ `
           startedAt
           __typename
         }
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        owner
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
+  }
+`;
+export const questionsByAuthor = /* GraphQL */ `
+  query QuestionsByAuthor(
+    $Author: String!
+    $sortDirection: ModelSortDirection
+    $filter: ModelQuestionFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    questionsByAuthor(
+      Author: $Author
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        Author
+        Text
+        imageUrl
+        upvotes
+        downvotes
+        Answers {
+          nextToken
+          startedAt
+          __typename
+        }
+        createdAt
+        updatedAt
         _version
         _deleted
         _lastChangedAt

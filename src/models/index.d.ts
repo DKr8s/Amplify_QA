@@ -12,12 +12,12 @@ type EagerAnswer = {
     readOnlyFields: 'updatedAt';
   };
   readonly id: string;
-  readonly Author?: string | null;
+  readonly Author: string;
   readonly Text: string;
-  readonly createdAt?: string | null;
   readonly questionID: string;
   readonly parentID?: string | null;
   readonly imageUrl?: string | null;
+  readonly createdAt?: string | null;
   readonly upvotes?: number | null;
   readonly downvotes?: number | null;
   readonly updatedAt?: string | null;
@@ -29,12 +29,12 @@ type LazyAnswer = {
     readOnlyFields: 'updatedAt';
   };
   readonly id: string;
-  readonly Author?: string | null;
+  readonly Author: string;
   readonly Text: string;
-  readonly createdAt?: string | null;
   readonly questionID: string;
   readonly parentID?: string | null;
   readonly imageUrl?: string | null;
+  readonly createdAt?: string | null;
   readonly upvotes?: number | null;
   readonly downvotes?: number | null;
   readonly updatedAt?: string | null;
@@ -51,7 +51,7 @@ type EagerQuestion = {
     identifier: ManagedIdentifier<Question, 'id'>;
   };
   readonly id: string;
-  readonly Author?: string | null;
+  readonly Author: string;
   readonly Text: string;
   readonly imageUrl?: string | null;
   readonly createdAt?: string | null;
@@ -66,7 +66,7 @@ type LazyQuestion = {
     identifier: ManagedIdentifier<Question, 'id'>;
   };
   readonly id: string;
-  readonly Author?: string | null;
+  readonly Author: string;
   readonly Text: string;
   readonly imageUrl?: string | null;
   readonly createdAt?: string | null;

@@ -21,6 +21,7 @@
       "defaultResolutionStrategy": {
         "type": "AUTOMERGE"
       }
-    }
+    },
+    "transformerVersion": 2
   }
 }

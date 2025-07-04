@@ -1,13 +1,19 @@
 type Answer
-  @model
+  @model(
+    subscriptions: {
+      onCreate: ["onCreateAnswer"]
+      onUpdate: ["onUpdateAnswer"]
+      onDelete: ["onDeleteAnswer"]
+    }
+  )
   @auth(rules: [
     { allow: public, operations: [create, read, update, delete] },
     { allow: owner, operations: [create, read, update, delete], identityClaim: "sub" }
-  ]) {
+  ])
+{
   id: ID!
-  Author: String
+  Author: String! @index(name: "byAuthor")
   Text: String!
-  createdAt: AWSDateTime
   questionID: ID! @index(name: "byQuestion")
   parentID: ID @index(name: "byParent")
   imageUrl: String
@@ -16,17 +22,22 @@ type Answer
 }
 
 type Question
-  @model
+  @model(
+    subscriptions: {
+      onCreate: ["onCreateQuestion"]
+      onUpdate: ["onUpdateQuestion"]
+      onDelete: ["onDeleteQuestion"]
+    }
+  )
   @auth(rules: [
     { allow: public, operations: [create, read, update, delete] },
     { allow: owner, operations: [create, read, update, delete], identityClaim: "sub" }
-  ]) {
+  ])
+{
   id: ID!
-  Author: String
+  Author: String! @index(name: "byAuthor")
   Text: String!
   imageUrl: String
-  createdAt: AWSDateTime
-  updatedAt: AWSDateTime
   upvotes: Int @default(value: "0")
   downvotes: Int @default(value: "0")
   Answers: [Answer] @hasMany(indexName: "byQuestion", fields: ["id"])
