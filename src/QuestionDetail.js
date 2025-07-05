@@ -34,10 +34,7 @@ export default function QuestionDetail() {
 
   useEffect(() => {
     async function fetchData() {
-      const q = await client.graphql({
-        query: getQuestion,
-        variables: { id },
-      });
+      const q = await client.graphql({ query: getQuestion, variables: { id } });
       setQuestion(q.data.getQuestion);
 
       const a = await client.graphql({
@@ -49,10 +46,7 @@ export default function QuestionDetail() {
         a.data.listAnswers.items.map(async (ans) => {
           const imageUrl = ans.imageUrl
             ? (
-                await getUrl({
-                  key: ans.imageUrl,
-                  options: { accessLevel: "public" },
-                })
+                await getUrl({ key: ans.imageUrl, options: { accessLevel: "public" } })
               ).url
             : null;
           return {
@@ -72,11 +66,7 @@ export default function QuestionDetail() {
   }, [id]);
 
   useEffect(() => {
-    const sub = client.graphql({
-      query: onCreateAnswer,
-      variables: {},
-      authMode: "API_KEY",
-    }).subscribe({
+    const sub = client.graphql({ query: onCreateAnswer, variables: {}, authMode: "API_KEY" }).subscribe({
       next: async ({ value }) => {
         const newAnswer = value?.data?.onCreateAnswer;
         if (!newAnswer || newAnswer.questionID !== id) return;
@@ -114,10 +104,7 @@ export default function QuestionDetail() {
       return new Date(b.createdAt) - new Date(a.createdAt);
     });
 
-  const paginatedAnswers = sortedAnswers.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+  const paginatedAnswers = sortedAnswers.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
   const totalPages = Math.ceil(sortedAnswers.length / itemsPerPage);
 
   const handleVote = async (answer, type) => {
@@ -144,11 +131,7 @@ export default function QuestionDetail() {
 
   const uploadImageToS3 = async (file) => {
     const filename = `${Date.now()}_${file.name}`;
-    await uploadData({
-      key: filename,
-      data: file,
-      options: { accessLevel: "public" },
-    }).result;
+    await uploadData({ key: filename, data: file, options: { accessLevel: "public" } }).result;
     return filename;
   };
 
@@ -183,9 +166,7 @@ export default function QuestionDetail() {
       });
       setAnswerList((prev) =>
         prev.map((a) =>
-          a.id === editingAnswerId
-            ? { ...a, ...updated.data.updateAnswer, imageUrl: previewUrl || a.imageUrl }
-            : a
+          a.id === editingAnswerId ? { ...a, ...updated.data.updateAnswer, imageUrl: previewUrl || a.imageUrl } : a
         )
       );
       setEditingAnswerId(null);
@@ -237,9 +218,77 @@ export default function QuestionDetail() {
     if (page >= 1 && page <= totalPages) setCurrentPage(page);
   };
 
+  function renderAnswerTree(answer, depth) {
+    const replies = answerList.filter((x) => x.parentID === answer.id);
+
+    return (
+      <div key={answer.id} className={`ml-${depth > 0 ? 6 : 0}`}>
+        <div className="bg-gray-50 rounded-lg border border-blue-100 p-4">
+          <div className="flex items-start gap-3">
+            <img
+              src={`https://api.dicebear.com/7.x/lorelei/svg?seed=${answer.Author}-${answer.id}`}
+              className="w-8 h-8 rounded-full border"
+              alt="avatar"
+            />
+            <div className="flex-1">
+              <p className="mb-2">{answer.Text}</p>
+              {answer.imageUrl && <img src={answer.imageUrl} className="max-w-xs rounded mb-2 border" alt="img" />}
+              <div className="text-sm text-gray-500 flex justify-between">
+                <span>✍ {answer.Author}</span>
+                <span>{new Date(answer.createdAt).toLocaleString()}</span>
+              </div>
+              <div className="flex items-center gap-4 mt-2 text-sm">
+                <button
+                  className={`text-green-600 zoom ${voteAnimatingId === `${answer.id}-upvotes` ? "active" : ""}`}
+                  onClick={() => handleVote(answer, "upvotes")}
+                >⬆ {answer.upvotes || 0}</button>
+                <button
+                  className={`text-red-600 zoom ${voteAnimatingId === `${answer.id}-downvotes` ? "active" : ""}`}
+                  onClick={() => handleVote(answer, "downvotes")}
+                >⬇ {answer.downvotes || 0}</button>
+                {user?.username === answer.Author && (
+                  <>
+                    <button className="text-blue-600" onClick={() => startEdit(answer)}>✏ Edit</button>
+                    <button className="text-red-600" onClick={() => handleDelete(answer)}>🗑 Delete</button>
+                  </>
+                )}
+                <button
+                  onClick={() => {
+                    setReplyingTo(replyingTo === answer.id ? null : answer.id);
+                    setShowAnswerForm(false);
+                    setEditingAnswerId(null);
+                    setReplyText("");
+                  }}
+                  className="text-blue-600"
+                >Reply</button>
+              </div>
+              {replyingTo === answer.id && (
+                <form onSubmit={(e) => submitAnswer(e, answer.id)} className="mt-3">
+                  <textarea
+                    value={replyText}
+                    onChange={(e) => setReplyText(e.target.value)}
+                    className="w-full border rounded p-2 mb-2"
+                    placeholder="Your reply..."
+                  />
+                  <input type="file" onChange={handleImageChange} className="mb-2" />
+                  {previewUrl && (
+                    <img src={previewUrl} alt="preview" className="max-w-xs rounded border mb-2" />
+                  )}
+                  <button type="submit" className="bg-blue-600 text-white px-4 py-1 rounded">Send</button>
+                </form>
+              )}
+            </div>
+          </div>
+        </div>
+        <div className="mt-4 space-y-4 ml-6">
+          {replies.map((r) => renderAnswerTree(r, depth + 1))}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-2xl mx-auto px-4 py-10 text-gray-800">
-      {/* Question */}
       <div className="bg-white p-6 rounded-xl border border-blue-100 shadow">
         <h1 className="text-2xl font-bold mb-2 text-blue-800">{question?.Text}</h1>
         <div className="flex justify-between text-sm text-gray-500 mb-4">
@@ -252,7 +301,6 @@ export default function QuestionDetail() {
         <Button onClick={() => setShowAnswerForm(!showAnswerForm)}>Answer Question</Button>
       </div>
 
-      {/* Answer Form */}
       {showAnswerForm && (
         <form onSubmit={(e) => submitAnswer(e)} className="my-6">
           <textarea
@@ -271,142 +319,31 @@ export default function QuestionDetail() {
         </form>
       )}
 
-      {/* Answer List */}
       <h3 className="text-xl font-semibold mt-10 mb-4 text-blue-800">🗨️ Answers</h3>
-      {paginatedAnswers.map((a) => (
-        <div key={a.id} className="mb-6 bg-gray-50 rounded-lg border border-blue-100 p-4">
-          <div className="flex items-start gap-3">
-            <img
-              src={`https://api.dicebear.com/7.x/lorelei/svg?seed=${a.Author}-${a.id}`}
-              className="w-8 h-8 rounded-full border"
-              alt="avatar"
-            />
-            <div className="flex-1">
-              <p className="mb-2">{a.Text}</p>
-              {a.imageUrl && (
-                <img src={a.imageUrl} className="max-w-xs rounded mb-2 border" alt="img" />
-              )}
-              <div className="text-sm text-gray-500 flex justify-between">
-                <span>✍ {a.Author}</span>
-                <span>{new Date(a.createdAt).toLocaleString()}</span>
-              </div>
-              <div className="flex items-center gap-4 mt-2 text-sm">
-                <button
-                  className={`text-green-600 zoom ${
-                    voteAnimatingId === `${a.id}-upvotes` ? "active" : ""
-                  }`}
-                  onClick={() => handleVote(a, "upvotes")}
-                >
-                  ⬆ {a.upvotes || 0}
-                </button>
-                <button
-                  className={`text-red-600 zoom ${
-                    voteAnimatingId === `${a.id}-downvotes` ? "active" : ""
-                  }`}
-                  onClick={() => handleVote(a, "downvotes")}
-                >
-                  ⬇ {a.downvotes || 0}
-                </button>
-                {user?.username === a.Author && (
-                  <>
-                    <button className="text-blue-600" onClick={() => startEdit(a)}>✏ Edit</button>
-                    <button className="text-red-600" onClick={() => handleDelete(a)}>🗑 Delete</button>
-                  </>
-                )}
-                <button
-                  onClick={() => {
-                    setReplyingTo(replyingTo === a.id ? null : a.id);
-                    setShowAnswerForm(false);
-                    setEditingAnswerId(null);
-                    setReplyText("");
-                  }}
-                  className="text-blue-600"
-                >
-                  Reply
-                </button>
-              </div>
+      <div className="space-y-6">
+        {paginatedAnswers.map((a) => renderAnswerTree(a, 0))}
+      </div>
 
-              {/* Reply List */}
-              {replyingTo === a.id && (
-                <form onSubmit={(e) => submitAnswer(e, a.id)} className="mt-3">
-                  <textarea
-                    value={replyText}
-                    onChange={(e) => setReplyText(e.target.value)}
-                    className="w-full border rounded p-2 mb-2"
-                    placeholder="Your reply..."
-                  />
-                  <input type="file" onChange={handleImageChange} className="mb-2" />
-                  {previewUrl && (
-                    <img src={previewUrl} alt="preview" className="max-w-xs rounded border mb-2" />
-                  )}
-                  <button type="submit" className="bg-blue-600 text-white px-4 py-1 rounded">
-                    Send
-                  </button>
-                </form>
-              )}
-
-              {answerList
-                .filter((r) => r.parentID === a.id)
-                .map((r) => (
-                  <div
-                    key={r.id}
-                    className="ml-8 mt-4 p-3 bg-blue-50 border border-blue-100 rounded"
-                  >
-                    <div className="flex items-center gap-2 mb-1">
-                      <img
-                        src={`https://api.dicebear.com/7.x/lorelei/svg?seed=${r.Author}-${r.id}`}
-                        className="w-5 h-5 rounded-full border"
-                        alt="avatar"
-                      />
-                      <span className="font-medium">{r.Author}</span>
-                      <span className="text-xs text-gray-400">
-                        {new Date(r.createdAt).toLocaleString()}
-                      </span>
-                    </div>
-                    <p>{r.Text}</p>
-                    {r.imageUrl && (
-                      <img
-                        src={r.imageUrl}
-                        className="ml-7 max-w-xs rounded mt-2 border"
-                        alt=""
-                      />
-                    )}
-                  </div>
-                ))}
-            </div>
-          </div>
-        </div>
-      ))}
-
-      {/* Pagination */}
       <div className="flex justify-center items-center gap-2 mt-6">
         <button
           onClick={() => handlePageChange(currentPage - 1)}
           disabled={currentPage === 1}
           className="px-3 py-1 border rounded bg-white text-blue-600 hover:bg-blue-100"
-        >
-          ← Prev
-        </button>
+        >← Prev</button>
         {[...Array(totalPages)].map((_, i) => (
           <button
             key={i + 1}
             onClick={() => handlePageChange(i + 1)}
             className={`px-3 py-1 border rounded transition-all duration-300 ${
-              currentPage === i + 1
-                ? "bg-blue-500 text-white scale-110"
-                : "bg-white text-blue-600 hover:bg-blue-100"
+              currentPage === i + 1 ? "bg-blue-500 text-white scale-110" : "bg-white text-blue-600 hover:bg-blue-100"
             }`}
-          >
-            {i + 1}
-          </button>
+          >{i + 1}</button>
         ))}
         <button
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
           className="px-3 py-1 border rounded bg-white text-blue-600 hover:bg-blue-100"
-        >
-          Next →
-        </button>
+        >Next →</button>
       </div>
     </div>
   );

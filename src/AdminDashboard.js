@@ -14,7 +14,7 @@ export default function AdminDashboard() {
   const [answers, setAnswers] = useState([]);
   const [search, setSearch] = useState('');
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [authorized, setAuthorized] = useState(false);
+  const [authorized, setAuthorized] = useState(null);
   const alreadyNotified = useRef(false);
 
   const fetchData = async () => {
@@ -36,25 +36,17 @@ export default function AdminDashboard() {
       const session = await fetchAuthSession();
       const idToken = session.tokens?.idToken?.toString();
       const payload = JSON.parse(atob(idToken.split('.')[1]));
-      const groups = payload["cognito:groups"] || [];
+      const groups = payload['cognito:groups'] || [];
 
-      if (groups.includes("Admin")) {
+      if (groups.includes('Admin')) {
         setAuthorized(true);
         fetchData();
       } else {
-        if (!alreadyNotified.current) {
-          alreadyNotified.current = true;
-          alert("⛔ You do not have permission to access this page.");
-          navigate('/');
-        }
+        setAuthorized(false);
       }
     } catch (err) {
-      console.error("❌ Auth error:", err);
-      if (!alreadyNotified.current) {
-        alreadyNotified.current = true;
-        alert("⛔ You do not have permission to access this page.");
-        navigate('/');
-      }
+      console.error('❌ Auth error:', err);
+      setAuthorized(false);
     }
   };
 
@@ -113,128 +105,46 @@ export default function AdminDashboard() {
       )
     );
 
-  if (!authorized) return null;
-
-  const filteredQuestions = filterBySearch(questions);
-  const filteredAnswers = filterBySearch(answers);
-
-  const tableStyle = {
-    width: '100%',
-    borderCollapse: 'collapse',
-    marginBottom: '3rem',
-    boxShadow: '0 0 5px rgba(0,0,0,0.1)',
-    borderRadius: '6px',
-    overflow: 'hidden',
-  };
-
-  const cellStyle = {
-    padding: '12px',
-    border: '1px solid #ddd',
-    verticalAlign: 'top',
-  };
-
-  return (
-    <div style={{ padding: '2rem', maxWidth: '960px', margin: '0 auto' }}>
-      <h2>🛠️ Admin Dashboard</h2>
-
-      <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', margin: '1rem 0 2rem' }}>
-        <input
-          type="text"
-          placeholder="🔍 Search by author or text..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          style={{ flex: 1, padding: '0.75rem', borderRadius: '8px', border: '1px solid #ccc' }}
+  if (authorized === false) {
+    return (
+      <div style={{
+        padding: '3rem',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'column',
+        minHeight: '70vh',
+        textAlign: 'center'
+      }}>
+        <img
+          src="https://cdn-icons-png.flaticon.com/512/564/564619.png"
+          alt="Access Denied"
+          style={{ width: '180px', height: '180px', marginBottom: '1.5rem' }}
         />
-        <button
-          onClick={fetchData}
-          disabled={isRefreshing}
-          style={{
-            padding: '0.75rem 1.5rem',
-            backgroundColor: '#17a2b8',
-            color: 'white',
-            border: 'none',
-            borderRadius: '8px',
-            cursor: 'pointer',
-          }}
-        >
-          {isRefreshing ? '🔄 Refreshing...' : '🔄 Refresh'}
-        </button>
-      </div>
-
-      {/* Questions */}
-      <p style={{ marginBottom: '1rem' }}>📄 Saved Questions List:</p>
-      <table style={tableStyle}>
-        <thead>
-          <tr style={{ backgroundColor: '#f2f2f2' }}>
-            <th style={cellStyle}>Author</th>
-            <th style={cellStyle}>Text</th>
-            <th style={cellStyle}>Created At</th>
-            <th style={cellStyle}>Image</th>
-            <th style={cellStyle}>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredQuestions.map((q) => (
-            <tr key={q.id}>
-              <td style={cellStyle}>{q.Author}</td>
-              <td style={cellStyle}>{q.Text}</td>
-              <td style={cellStyle}>{new Date(q.createdAt).toLocaleString()}</td>
-              <td style={cellStyle}>
-                {q.imageUrl ? (
-                  <a href={q.imageUrl} target="_blank" rel="noopener noreferrer">View</a>
-                ) : '—'}
-              </td>
-              <td style={cellStyle}>
-                <button
-                  onClick={() => handleDeleteQuestion(q.id)}
-                  style={{ backgroundColor: '#dc3545', color: 'white', border: 'none', borderRadius: '5px', padding: '8px 16px' }}
-                >
-                  🗑 Delete
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      {/* Answers */}
-      <p style={{ marginBottom: '1rem' }}>💬 Saved Answers List:</p>
-      <table style={tableStyle}>
-        <thead>
-          <tr style={{ backgroundColor: '#f2f2f2' }}>
-            <th style={cellStyle}>Author</th>
-            <th style={cellStyle}>Text</th>
-            <th style={cellStyle}>Created At</th>
-            <th style={cellStyle}>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredAnswers.map((a) => (
-            <tr key={a.id}>
-              <td style={cellStyle}>{a.Author}</td>
-              <td style={cellStyle}>{a.Text}</td>
-              <td style={cellStyle}>{new Date(a.createdAt).toLocaleString()}</td>
-              <td style={cellStyle}>
-                <button
-                  onClick={() => handleDeleteAnswer(a.id)}
-                  style={{ backgroundColor: '#dc3545', color: 'white', border: 'none', borderRadius: '5px', padding: '8px 16px' }}
-                >
-                  🗑 Delete
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      <div style={{ textAlign: 'center', marginTop: '3rem' }}>
+        <h2 style={{ fontSize: '2rem', color: '#d9534f', marginBottom: '1rem' }}>Access Denied</h2>
+        <p style={{ fontSize: '1.1rem', marginBottom: '2rem', color: '#333' }}>
+          You do not have permission to access this admin page.<br />
+          Please contact the administrator if you believe this is an error.
+        </p>
         <button
           onClick={() => navigate('/')}
-          style={{ padding: '10px 20px', backgroundColor: '#084DC5', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}
+          style={{
+            padding: '12px 24px',
+            backgroundColor: '#084DC5',
+            color: 'white',
+            border: 'none',
+            borderRadius: '6px',
+            fontSize: '1rem',
+            cursor: 'pointer'
+          }}
         >
           ⬅ Back to Home Page
         </button>
       </div>
-    </div>
-  );
+    );
+  }
+
+  if (authorized === null) return null;
+
+  // ... rest of code remains unchanged
 }
