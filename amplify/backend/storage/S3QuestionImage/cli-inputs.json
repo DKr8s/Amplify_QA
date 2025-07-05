@@ -12,6 +12,5 @@
     "CREATE_AND_UPDATE",
     "READ",
     "DELETE"
-  ],
-  "groupAccess": {}
+  ]
 }

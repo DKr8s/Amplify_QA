@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { fetchAuthSession } from '@aws-amplify/auth';
 import { DataStore } from '@aws-amplify/datastore';
 import { Question, Answer } from './models';
 import { generateClient } from 'aws-amplify/api';
@@ -13,6 +14,8 @@ export default function AdminDashboard() {
   const [answers, setAnswers] = useState([]);
   const [search, setSearch] = useState('');
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [authorized, setAuthorized] = useState(false);
+  const alreadyNotified = useRef(false);
 
   const fetchData = async () => {
     setIsRefreshing(true);
@@ -28,8 +31,35 @@ export default function AdminDashboard() {
     }
   };
 
+  const checkAuth = async () => {
+    try {
+      const session = await fetchAuthSession();
+      const idToken = session.tokens?.idToken?.toString();
+      const payload = JSON.parse(atob(idToken.split('.')[1]));
+      const groups = payload["cognito:groups"] || [];
+
+      if (groups.includes("Admin")) {
+        setAuthorized(true);
+        fetchData();
+      } else {
+        if (!alreadyNotified.current) {
+          alreadyNotified.current = true;
+          alert("⛔ You do not have permission to access this page.");
+          navigate('/');
+        }
+      }
+    } catch (err) {
+      console.error("❌ Auth error:", err);
+      if (!alreadyNotified.current) {
+        alreadyNotified.current = true;
+        alert("⛔ You do not have permission to access this page.");
+        navigate('/');
+      }
+    }
+  };
+
   useEffect(() => {
-    fetchData();
+    checkAuth();
   }, []);
 
   const deleteGraphQLItem = async (mutation, id, version) => {
@@ -40,7 +70,7 @@ export default function AdminDashboard() {
   };
 
   const handleDeleteQuestion = async (questionId) => {
-    const confirm = window.confirm('Are you sure you want to delete this question??');
+    const confirm = window.confirm('Are you sure you want to delete this question?');
     if (!confirm) return;
 
     try {
@@ -72,7 +102,7 @@ export default function AdminDashboard() {
       await deleteGraphQLItem(deleteAnswer, answerId, ans._version);
       setAnswers((prev) => prev.filter((a) => a.id !== answerId));
     } catch (err) {
-      console.error('❌Error while deleting :', err);
+      console.error('❌Error while deleting:', err);
     }
   };
 
@@ -82,6 +112,8 @@ export default function AdminDashboard() {
         field?.toLowerCase().includes(search.toLowerCase())
       )
     );
+
+  if (!authorized) return null;
 
   const filteredQuestions = filterBySearch(questions);
   const filteredAnswers = filterBySearch(answers);
@@ -129,6 +161,7 @@ export default function AdminDashboard() {
         </button>
       </div>
 
+      {/* Questions */}
       <p style={{ marginBottom: '1rem' }}>📄 Saved Questions List:</p>
       <table style={tableStyle}>
         <thead>
@@ -146,7 +179,11 @@ export default function AdminDashboard() {
               <td style={cellStyle}>{q.Author}</td>
               <td style={cellStyle}>{q.Text}</td>
               <td style={cellStyle}>{new Date(q.createdAt).toLocaleString()}</td>
-              <td style={cellStyle}>{q.imageUrl ? <a href={q.imageUrl} target="_blank" rel="noopener noreferrer">View</a> : '—'}</td>
+              <td style={cellStyle}>
+                {q.imageUrl ? (
+                  <a href={q.imageUrl} target="_blank" rel="noopener noreferrer">View</a>
+                ) : '—'}
+              </td>
               <td style={cellStyle}>
                 <button
                   onClick={() => handleDeleteQuestion(q.id)}
@@ -160,6 +197,7 @@ export default function AdminDashboard() {
         </tbody>
       </table>
 
+      {/* Answers */}
       <p style={{ marginBottom: '1rem' }}>💬 Saved Answers List:</p>
       <table style={tableStyle}>
         <thead>

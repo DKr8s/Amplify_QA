@@ -6,8 +6,10 @@ import { onCreateQuestion } from './graphql/subscriptions';
 import { Link } from "react-router-dom";
 import debounce from 'lodash.debounce';
 import SearchInput from './ui-components/SearchInput';
-import { FaFacebookF, FaTwitter, FaLink } from "react-icons/fa";
+import { FaFacebookF, FaTwitter, FaRegCopy, FaTimes } from "react-icons/fa";
+
 const client = generateClient();
+const DOMAIN = window.location.origin;
 
 const QuestionsPage = () => {
   const [questions, setQuestions] = useState([]);
@@ -145,13 +147,12 @@ const QuestionsPage = () => {
 
   const totalPages = Math.ceil(allQuestions.length / itemsPerPage);
 
-  const copyToClipboard = (q) => {
-    const url = `${window.location.origin}/question/${q.id}`;
-    navigator.clipboard.writeText(`${q.Text}\n\nLink: ${url}`);
+  const copyToClipboard = (text) => {
+    navigator.clipboard.writeText(text);
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8 relative z-0">
+    <div className="max-w-4xl mx-auto px-4 py-8 relative">
       <h1 className="text-3xl font-bold text-blue-800 mb-6">🔥 Top Voted Questions</h1>
 
       <div className="flex flex-col md:flex-row gap-4 mb-6">
@@ -247,70 +248,52 @@ const QuestionsPage = () => {
         </div>
       )}
 
-     {shareModalId && (
-  <div
-    className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-    onClick={() => setShareModalId(null)}
-  >
-    <div
-      className="bg-white rounded-lg shadow-lg p-6 max-w-md w-full relative"
-      onClick={(e) => e.stopPropagation()}
-    >
-      <h2 className="text-xl font-semibold text-blue-800 mb-4 flex items-center gap-2">
-        📤 Share this question
-      </h2>
-      <p className="mb-2 text-gray-800 font-medium">
-        {allQuestions.find((q) => q.id === shareModalId)?.Text}
-      </p>
-      <div className="bg-gray-100 p-2 rounded text-sm text-gray-800 mb-4 break-words">
-        {`${window.location.origin}/question/${shareModalId}`}
-      </div>
-
-      <div className="grid grid-cols-2 gap-3 mb-4">
-        <button
-          onClick={() =>
-            copyToClipboard(allQuestions.find((q) => q.id === shareModalId))
-          }
-          className="flex items-center justify-center gap-2 px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-        >
-          <FaLink /> Copy Link
-        </button>
-
-        <a
-          href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
-            `${window.location.origin}/question/${shareModalId}`
-          )}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center justify-center gap-2 px-3 py-2 bg-blue-800 text-white rounded hover:bg-blue-900"
-        >
-          <FaFacebookF /> Facebook
-        </a>
-
-        <a
-          href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(
-            `${window.location.origin}/question/${shareModalId}`
-          )}&text=${encodeURIComponent(
-            allQuestions.find((q) => q.id === shareModalId)?.Text || ""
-          )}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center justify-center gap-2 px-3 py-2 bg-sky-500 text-white rounded hover:bg-sky-600"
-        >
-          <FaTwitter /> Twitter
-        </a>
-
-        <button
-          onClick={() => setShareModalId(null)}
-          className="px-3 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
-        >
-          Close
-        </button>
-      </div>
-    </div>
-  </div>
-)}
-
+      {/* SHARE MODAL */}
+      {shareModalId && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-xl shadow-md w-[90%] max-w-xl relative">
+            <button
+              onClick={() => setShareModalId(null)}
+              className="absolute top-3 right-3 text-gray-400 hover:text-gray-700"
+            >
+              <FaTimes />
+            </button>
+            <h2 className="text-lg font-semibold mb-4 text-blue-700">📤 Share this question</h2>
+            <p className="mb-2">{questions.find(q => q.id === shareModalId)?.Text}</p>
+            <div className="flex gap-2 mb-4">
+              <input
+                value={`${DOMAIN}/question/${shareModalId}`}
+                readOnly
+                className="w-full border px-2 py-1 rounded"
+              />
+              <button
+                onClick={() => copyToClipboard(`${DOMAIN}/question/${shareModalId}`)}
+                className="bg-blue-500 text-white px-3 py-1 rounded"
+              >
+                <FaRegCopy />
+              </button>
+            </div>
+            <div className="flex gap-4">
+              <a
+                href={`https://www.facebook.com/sharer/sharer.php?u=${DOMAIN}/question/${shareModalId}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:text-blue-800 text-xl"
+              >
+                <FaFacebookF />
+              </a>
+              <a
+                href={`https://twitter.com/intent/tweet?url=${DOMAIN}/question/${shareModalId}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-400 hover:text-blue-600 text-xl"
+              >
+                <FaTwitter />
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -1,7 +1,14 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getQuestion, listAnswers } from "./graphql/queries";
-import { createAnswer, updateAnswer } from "./graphql/mutations";
+import {
+  getQuestion,
+  listAnswers,
+} from "./graphql/queries";
+import {
+  createAnswer,
+  updateAnswer,
+  deleteAnswer,
+} from "./graphql/mutations";
 import { onCreateAnswer } from "./graphql/subscriptions";
 import { uploadData, getUrl } from "@aws-amplify/storage";
 import { generateClient } from "@aws-amplify/api";
@@ -9,24 +16,28 @@ import { useAuthenticator, Button } from "@aws-amplify/ui-react";
 
 const client = generateClient();
 
-const QuestionDetail = () => {
+export default function QuestionDetail() {
   const { id } = useParams();
   const { user } = useAuthenticator((context) => [context.user]);
 
   const [question, setQuestion] = useState(null);
   const [answerList, setAnswerList] = useState([]);
   const [replyText, setReplyText] = useState("");
+  const [editingAnswerId, setEditingAnswerId] = useState(null);
+  const [replyingTo, setReplyingTo] = useState(null);
   const [imageFile, setImageFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [voteAnimatingId, setVoteAnimatingId] = useState(null);
   const [showAnswerForm, setShowAnswerForm] = useState(false);
-  const [replyingTo, setReplyingTo] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
   useEffect(() => {
     async function fetchData() {
-      const q = await client.graphql({ query: getQuestion, variables: { id } });
+      const q = await client.graphql({
+        query: getQuestion,
+        variables: { id },
+      });
       setQuestion(q.data.getQuestion);
 
       const a = await client.graphql({
@@ -37,7 +48,12 @@ const QuestionDetail = () => {
       const mapped = await Promise.all(
         a.data.listAnswers.items.map(async (ans) => {
           const imageUrl = ans.imageUrl
-            ? (await getUrl({ key: ans.imageUrl, options: { accessLevel: "public" } })).url
+            ? (
+                await getUrl({
+                  key: ans.imageUrl,
+                  options: { accessLevel: "public" },
+                })
+              ).url
             : null;
           return {
             ...ans,
@@ -104,10 +120,6 @@ const QuestionDetail = () => {
   );
   const totalPages = Math.ceil(sortedAnswers.length / itemsPerPage);
 
-  const handlePageChange = (page) => {
-    if (page >= 1 && page <= totalPages) setCurrentPage(page);
-  };
-
   const handleVote = async (answer, type) => {
     const updated = await client.graphql({
       query: updateAnswer,
@@ -156,20 +168,43 @@ const QuestionDetail = () => {
     let imageKey = null;
     if (imageFile) imageKey = await uploadImageToS3(imageFile);
 
-    await client.graphql({
-      query: createAnswer,
-      variables: {
-        input: {
-          Text: replyText,
-          Author: user?.username || "anonymous",
-          questionID: question.id,
-          parentID,
-          imageUrl: imageKey,
-          upvotes: 0,
-          downvotes: 0,
+    if (editingAnswerId) {
+      const original = answerList.find((a) => a.id === editingAnswerId);
+      const updated = await client.graphql({
+        query: updateAnswer,
+        variables: {
+          input: {
+            id: editingAnswerId,
+            _version: original._version,
+            Text: replyText,
+            imageUrl: imageKey || original.imageUrl,
+          },
         },
-      },
-    });
+      });
+      setAnswerList((prev) =>
+        prev.map((a) =>
+          a.id === editingAnswerId
+            ? { ...a, ...updated.data.updateAnswer, imageUrl: previewUrl || a.imageUrl }
+            : a
+        )
+      );
+      setEditingAnswerId(null);
+    } else {
+      await client.graphql({
+        query: createAnswer,
+        variables: {
+          input: {
+            Text: replyText,
+            Author: user?.username || "anonymous",
+            questionID: question.id,
+            parentID,
+            imageUrl: imageKey,
+            upvotes: 0,
+            downvotes: 0,
+          },
+        },
+      });
+    }
 
     setReplyText("");
     clearImage();
@@ -177,8 +212,34 @@ const QuestionDetail = () => {
     setShowAnswerForm(false);
   };
 
+  const startEdit = (a) => {
+    setReplyText(a.Text);
+    setEditingAnswerId(a.id);
+    setPreviewUrl(a.imageUrl || null);
+    setImageFile(null);
+    setReplyingTo(null);
+    setShowAnswerForm(true);
+  };
+
+  const handleDelete = async (a) => {
+    const confirmed = window.confirm("Are you sure you want to delete this answer?");
+    if (!confirmed) return;
+
+    await client.graphql({
+      query: deleteAnswer,
+      variables: { input: { id: a.id, _version: a._version } },
+    });
+
+    setAnswerList((prev) => prev.filter((x) => x.id !== a.id && x.parentID !== a.id));
+  };
+
+  const handlePageChange = (page) => {
+    if (page >= 1 && page <= totalPages) setCurrentPage(page);
+  };
+
   return (
     <div className="max-w-2xl mx-auto px-4 py-10 text-gray-800">
+      {/* Question */}
       <div className="bg-white p-6 rounded-xl border border-blue-100 shadow">
         <h1 className="text-2xl font-bold mb-2 text-blue-800">{question?.Text}</h1>
         <div className="flex justify-between text-sm text-gray-500 mb-4">
@@ -191,6 +252,7 @@ const QuestionDetail = () => {
         <Button onClick={() => setShowAnswerForm(!showAnswerForm)}>Answer Question</Button>
       </div>
 
+      {/* Answer Form */}
       {showAnswerForm && (
         <form onSubmit={(e) => submitAnswer(e)} className="my-6">
           <textarea
@@ -204,13 +266,13 @@ const QuestionDetail = () => {
             <img src={previewUrl} alt="preview" className="max-w-xs rounded border mb-2" />
           )}
           <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
-            Send
+            {editingAnswerId ? "Update" : "Send"}
           </button>
         </form>
       )}
 
+      {/* Answer List */}
       <h3 className="text-xl font-semibold mt-10 mb-4 text-blue-800">🗨️ Answers</h3>
-
       {paginatedAnswers.map((a) => (
         <div key={a.id} className="mb-6 bg-gray-50 rounded-lg border border-blue-100 p-4">
           <div className="flex items-start gap-3">
@@ -228,7 +290,7 @@ const QuestionDetail = () => {
                 <span>✍ {a.Author}</span>
                 <span>{new Date(a.createdAt).toLocaleString()}</span>
               </div>
-              <div className="flex items-center gap-4 mt-2">
+              <div className="flex items-center gap-4 mt-2 text-sm">
                 <button
                   className={`text-green-600 zoom ${
                     voteAnimatingId === `${a.id}-upvotes` ? "active" : ""
@@ -245,14 +307,26 @@ const QuestionDetail = () => {
                 >
                   ⬇ {a.downvotes || 0}
                 </button>
+                {user?.username === a.Author && (
+                  <>
+                    <button className="text-blue-600" onClick={() => startEdit(a)}>✏ Edit</button>
+                    <button className="text-red-600" onClick={() => handleDelete(a)}>🗑 Delete</button>
+                  </>
+                )}
                 <button
-                  onClick={() => setReplyingTo(replyingTo === a.id ? null : a.id)}
-                  className="text-blue-600 text-sm ml-4"
+                  onClick={() => {
+                    setReplyingTo(replyingTo === a.id ? null : a.id);
+                    setShowAnswerForm(false);
+                    setEditingAnswerId(null);
+                    setReplyText("");
+                  }}
+                  className="text-blue-600"
                 >
                   Reply
                 </button>
               </div>
 
+              {/* Reply List */}
               {replyingTo === a.id && (
                 <form onSubmit={(e) => submitAnswer(e, a.id)} className="mt-3">
                   <textarea
@@ -304,6 +378,7 @@ const QuestionDetail = () => {
         </div>
       ))}
 
+      {/* Pagination */}
       <div className="flex justify-center items-center gap-2 mt-6">
         <button
           onClick={() => handlePageChange(currentPage - 1)}
@@ -335,6 +410,4 @@ const QuestionDetail = () => {
       </div>
     </div>
   );
-};
-
-export default QuestionDetail;
+}
