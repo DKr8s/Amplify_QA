@@ -31,9 +31,11 @@ export default function QuestionDetail() {
   const [showAnswerForm, setShowAnswerForm] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    async function fetchData() {
+  const fetchQuestionAndAnswers = async () => {
+    setLoading(true);
+    try {
       const q = await client.graphql({ query: getQuestion, variables: { id } });
       setQuestion(q.data.getQuestion);
 
@@ -43,33 +45,39 @@ export default function QuestionDetail() {
       });
 
       const mapped = await Promise.all(
-        a.data.listAnswers.items.map(async (ans) => {
-          const imageUrl = ans.imageUrl
-            ? (
-                await getUrl({ key: ans.imageUrl, options: { accessLevel: "public" } })
-              ).url
-            : null;
-          return {
-            ...ans,
-            Author: ans.Author || "anonymous",
-            imageUrl,
-            upvotes: ans.upvotes || 0,
-            downvotes: ans.downvotes || 0,
-          };
-        })
+        a.data.listAnswers.items
+          .filter((ans) => !ans._deleted)
+          .map(async (ans) => {
+            const imageUrl = ans.imageUrl
+              ? (await getUrl({ key: ans.imageUrl, options: { accessLevel: "public" } })).url
+              : null;
+            return {
+              ...ans,
+              Author: ans.Author || "anonymous",
+              imageUrl,
+              upvotes: ans.upvotes || 0,
+              downvotes: ans.downvotes || 0,
+            };
+          })
       );
 
       setAnswerList(mapped);
+      setCurrentPage(1);
+      setLoading(false);
+    } catch (err) {
+      console.error("❌ Failed to refresh question and answers:", err);
     }
+  };
 
-    if (id) fetchData();
+  useEffect(() => {
+    if (id) fetchQuestionAndAnswers();
   }, [id]);
 
   useEffect(() => {
-    const sub = client.graphql({ query: onCreateAnswer, variables: {}, authMode: "API_KEY" }).subscribe({
+    const sub = client.graphql({ query: onCreateAnswer }).subscribe({
       next: async ({ value }) => {
         const newAnswer = value?.data?.onCreateAnswer;
-        if (!newAnswer || newAnswer.questionID !== id) return;
+        if (!newAnswer || newAnswer.questionID !== id || newAnswer._deleted) return;
 
         const imageUrl = newAnswer.imageUrl
           ? (await getUrl({ key: newAnswer.imageUrl, options: { accessLevel: "public" } })).url
@@ -106,6 +114,10 @@ export default function QuestionDetail() {
 
   const paginatedAnswers = sortedAnswers.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
   const totalPages = Math.ceil(sortedAnswers.length / itemsPerPage);
+
+  const handlePageChange = (page) => {
+    if (page >= 1 && page <= totalPages) setCurrentPage(page);
+  };
 
   const handleVote = async (answer, type) => {
     const updated = await client.graphql({
@@ -214,10 +226,6 @@ export default function QuestionDetail() {
     setAnswerList((prev) => prev.filter((x) => x.id !== a.id && x.parentID !== a.id));
   };
 
-  const handlePageChange = (page) => {
-    if (page >= 1 && page <= totalPages) setCurrentPage(page);
-  };
-
   function renderAnswerTree(answer, depth) {
     const replies = answerList.filter((x) => x.parentID === answer.id);
 
@@ -290,7 +298,19 @@ export default function QuestionDetail() {
   return (
     <div className="max-w-2xl mx-auto px-4 py-10 text-gray-800">
       <div className="bg-white p-6 rounded-xl border border-blue-100 shadow">
-        <h1 className="text-2xl font-bold mb-2 text-blue-800">{question?.Text}</h1>
+        <div className="flex justify-between items-start mb-2">
+          <h1 className="text-2xl font-bold text-blue-800">{question?.Text}</h1>
+          <div className="flex items-center gap-2">
+            {loading && <span className="text-sm text-gray-400">Refreshing...</span>}
+            <button
+              onClick={fetchQuestionAndAnswers}
+              className="bg-blue-400 text-white px-3 py-1 rounded-lg hover:bg-blue-500 text-sm shadow"
+              disabled={loading}
+            >
+              🔄 Refresh
+            </button>
+          </div>
+        </div>
         <div className="flex justify-between text-sm text-gray-500 mb-4">
           <span>👤 {question?.Author || "anonymous"}</span>
           <span>{question && new Date(question.createdAt).toLocaleString()}</span>

@@ -44,7 +44,9 @@ const QuestionsPage = () => {
           variables: { limit: 50, nextToken },
         });
 
-        const items = result.data.listQuestions.items.filter((q) => q && q.createdAt);
+        const items = result.data.listQuestions.items.filter(
+          (q) => q && q.createdAt && !q._deleted // 🔥 Lọc item đã bị xóa
+        );
         allItems = [...allItems, ...items];
         nextToken = result.data.listQuestions.nextToken;
       } while (nextToken);
@@ -155,12 +157,18 @@ const QuestionsPage = () => {
     <div className="max-w-4xl mx-auto px-4 py-8 relative">
       <h1 className="text-3xl font-bold text-blue-800 mb-6">🔥 Top Voted Questions</h1>
 
-      <div className="flex flex-col md:flex-row gap-4 mb-6">
+      <div className="flex flex-col md:flex-row gap-4 mb-6 items-center">
         <SearchInput
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
           placeholder=" Search by content or author"
         />
+        <button
+          onClick={() => fetchQuestions(keyword)}
+          className="bg-blue-400 text-white px-4 py-2 rounded-lg hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 transition shadow"
+        >
+          🔄 Refresh
+        </button>
       </div>
 
       {loading ? (
